@@ -16,35 +16,35 @@
 /* Global constants */
 int R = 3; /* Kernel lenght, costant for all layers */
 
-double sigmoid(double x) {
+float sigmoid(float x) {
     return 1.0 / (1.0 + exp(-x));
 }
 
 /* Fills n x n square matrix m with random values */
-void fill( double* m, int n )
+void fill( float* m, int n )
 {
     int i, j;
     for (i=0; i<n; i++) {
-        m[i] = (double)rand() / RAND_MAX;
+        m[i] = (float)rand() / RAND_MAX;
     }
 }
 
-void fill_zeros( double* m, int n ){
+void fill_zeros( float* m, int n ){
     int i, j;
 // #pragma omp parallel for
     for (i=0; i<n; i++) {
-        m[i] = (double)0;
+        m[i] = (float)0;
     }
 }
 
-void forward_propagation(int K, int R, int* layers_neuron_number, double* V, double* W, double* B) {
+void forward_propagation(int K, int R, int* layers_neuron_number, float* V, float* W, float* B) {
     int new_value_index = layers_neuron_number[0];  /* Start from the first neuron of layer 1 */
     int old_value_index = 0;  /* Start from the first neuron of the input layer (layer 0) */
     int weight_index = 0;     /* All weights are stored contiguously */
 
     for (int k = 1; k < K; k++) { // Non <= K
         for (int i = 0; i < layers_neuron_number[k]; i++) { /* For every output neutron y_i*/
-            double sum = 0.0;
+            float sum = 0.0;
             for (int r = 0; r < R; r++) {   /* Iterate on R last layer neutrons for calculate the sum  */
                 int input_index = old_value_index + i + r;
                 sum += V[input_index] * W[weight_index++];
@@ -59,14 +59,14 @@ void forward_propagation(int K, int R, int* layers_neuron_number, double* V, dou
 
 int main( int argc, char *argv[] )
 {
-    double tstart, tstop;
+    float tstart, tstop;
     /* Initialized random generator */
     srand(time(NULL));
     /* Constants passed as argoument*/
     int N;  /* N = Number of neurons on layer 0 */
     int K;  /* K = Number of layers in the network */
     int N_neurons; /* Numbers of neurons from leyer 1 to layer K-1 */
-    double *I, *W, *B, *V;  /* Data */
+    float *I, *W, *B, *V;  /* Data */
     int *layers_neuron_number;  /* Array with the numbers of neuron for each layer*/
     
     if (argc == 3) {
@@ -77,16 +77,27 @@ int main( int argc, char *argv[] )
 
     printf("N = %d K = %d R = %d\n", N, K, R);
 
-    /* Data generation with random double values, we need:
+    /* Compute the total amount of neurons from input layer
+        to K-1 layer.
+    */
+    layers_neuron_number = (int*)malloc( K * sizeof(int) );  
+    N_neurons = 0;
+    for(int t = 0; t < K; t++){
+        N_neurons += (N - t*(R - 1));
+        layers_neuron_number[t] = (N - t*(R - 1));
+    }
+    printf("Total neurons: %d \n", N_neurons);    
+
+    /* Data generation with random float values, we need:
         - Layer 0: N input values
         - For each neuron we need 3 weights
         - In total we have N_neurons * 3 weights
         - For each layer we have 1 bias value 
          */
-    // I = (double*)malloc( N * sizeof(double) );  /* Input layer vector */
-    W = (double*)malloc( N_neurons * R * sizeof(double) ); /* Weights vector */
-    B = (double*)malloc( (K - 1) * sizeof(double) ); /* Bias vector */
-    V = (double*)malloc( (N + N_neurons) * sizeof(double) ); /* Neurons value vector  */
+    // I = (float*)malloc( N * sizeof(float) );  /* Input layer vector */
+    W = (float*)malloc( N_neurons * R * sizeof(float) ); /* Weights vector */
+    B = (float*)malloc( (K - 1) * sizeof(float) ); /* Bias vector */
+    V = (float*)malloc( (N + N_neurons) * sizeof(float) ); /* Neurons value vector  */
 
     if (V == NULL || W == NULL || B == NULL) {
         printf("Memory allocation failed.\n");
@@ -98,14 +109,14 @@ int main( int argc, char *argv[] )
     tstart = hpc_gettime();
     fill(W, N_neurons * 3);
     tstop = hpc_gettime();
-    printf("Execution time %f\n", tstop - tstart); 
+    printf("Data preparation execution time %f\n", tstop - tstart); 
 
     fill(B, K - 1);
 
-    printf("\nINPUT_VECTOR (I), size %d\n ", N);
-    printf("\nWEIGHTS_VECTOR (W), size %d\n", N_neurons * 3);
-    printf("\nBIAS_VECTOR (B), size %d\n", K-1);
-    printf("\n\n");
+    // printf("\nINPUT_VECTOR (I), size %d\n ", N);
+    // printf("\nWEIGHTS_VECTOR (W), size %d\n", N_neurons * 3);
+    // printf("\nBIAS_VECTOR (B), size %d\n", K-1);
+    // printf("\n\n");
 
     /* Serial version */
     /* For each layer */
@@ -116,7 +127,7 @@ int main( int argc, char *argv[] )
     tstart = hpc_gettime();
     forward_propagation(K, R, layers_neuron_number, V, W, B);
     tstop = hpc_gettime();
-    printf("Execution time %f\n", tstop - tstart); 
+    printf("Forward execution time %f\n", tstop - tstart); 
 
     free(layers_neuron_number);
     free(V);

@@ -46,9 +46,9 @@ void fill_zeros( double* m, int n )
     }
 }
 
-// void forward_step(N, K, *W, *b){
+void forward_step(*last_layer_buffer, current_layer_buffer, *W, int layer_number){
 
-// }
+}
 
 int main( int argc, char *argv[] )
 {
@@ -101,6 +101,10 @@ int main( int argc, char *argv[] )
     }
     tstop = hpc_gettime();
     printf("Execution time for filling values %f\n", tstop - tstart); 
+
+    for(int i=1; i < K; i++){
+        forward_step();
+    }
 
     free(W);
     free(B);
