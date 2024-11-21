@@ -133,11 +133,14 @@ int main( int argc, char *argv[] )
     float best = 1;
     int bestP = 1;
     float bestDiff = 0;
-    for(int p=1; p<=100; p++){
+    for(int p=1; p<=30; p++){
         omp_set_num_threads(p);
         printf("P=%d\n", p);
         tstart = hpc_gettime();
         forward_propagation(K, R, layers_neuron_number, V, W, B);
+        for(int i = N_neurons - 10; i < N_neurons; i++){
+            printf("%f ", V[i]);
+        }
         tstop = hpc_gettime();
         if(p==1){
             oneCoreReference = tstop - tstart;

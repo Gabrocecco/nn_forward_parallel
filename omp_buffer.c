@@ -205,7 +205,7 @@ int main( int argc, char *argv[] )
             weight_index += (N - k * (R - 1)) * R;
         }
         printf("Parallel output: ... ");
-        for(int i=(N - K-1 * (R - 1)) - 10; i < (N - K-1 * (R - 1)); i++){
+        for(int i=(N - ((K-1) * (R - 1))) - 10; i < (N - ((K-1) * (R - 1))); i++){
             printf("%f ", output_buffer[i]);
         }
         printf("\n");
