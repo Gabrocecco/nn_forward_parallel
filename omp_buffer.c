@@ -1,9 +1,9 @@
 /****************************************************************************
  * Compile with:
- * gcc -fopenmp omp.c -o omp
+ * gcc -fopenmp omp_buffer.c -o omp_buffer -lm
  *
  * Run with:
- * OMP_NUM_THREADS=4 ./omp N K 
+ * OMP_NUM_THREADS=4 ./omp_buffer 7000000 100
  *
  ****************************************************************************/
 
@@ -93,7 +93,7 @@ int main( int argc, char *argv[] )
     int N;  /* N = Number of neurons on layer 0 */
     int K;  /* K = Number of layers in the network */
     int N_neurons; /* Numbers of neurons from leyer 1 to layer K-1 */
-    float *input_buffer, *output_buffer, *W, *B, *V;  /* Data */
+    float *input_buffer, *output_buffer, *W, *B;  /* Data */
     int *layers_neuron_number;  /* Array with the numbers of neuron for each layer*/
     
     if (argc == 3) {
@@ -154,7 +154,7 @@ int main( int argc, char *argv[] )
     float best = 1;
     int bestP = 1;
     float bestDiff = 0;
-    for(int p=1; p<=100; p++){
+    for(int p=1; p<=14; p++){
         omp_set_num_threads(p);
         printf("P=%d\n", p);
 
@@ -191,10 +191,11 @@ int main( int argc, char *argv[] )
     }
     printf("\nBest speedup: +%.2f%% (diff from best: +%.2f%%), P=%d\n", best, bestDiff,bestP);
 
-
+    free(input_buffer);
+    free(output_buffer);
     free(layers_neuron_number);
-    free(V);
     free(W);
     free(B);
+
     return 0;
 }
