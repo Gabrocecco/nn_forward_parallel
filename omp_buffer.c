@@ -63,6 +63,27 @@ void forward_propagation(int K, int R, int* layers_neuron_number, float* V, floa
     }
 }
 
+/* Computer the Y_k layer outputs */
+void step_forward(float* input_buffer, float* output_buffer, int k, int N, float* W, float* B, int weight_index) {
+    int output_layer_size = N - k * (R - 1);  /* Number of neurons in current layer */
+    
+    int input_buffer_index = 0;  
+    int output_buffer_index = 0; 
+    /* For every neuron in output layer*/
+    #pragma omp parallel for schedule(static)
+    for (int i = 0; i < (N - k*(R - 1)); i++) { /* For every output neutron y_i in the output buffer)*/
+        float sum = 0;
+        int weight_idx = weight_index + i * R;  // Offset for the weight vector
+
+        for (int r = 0; r < R; r++) {
+            sum += input_buffer[i + r] * W[weight_idx + r];
+        }
+        sum += B[k - 1];  
+        output_buffer[i] = sigmoid(sum);  
+    }
+}
+
+
 int main( int argc, char *argv[] )
 {
     float tstart, tstop;
@@ -72,7 +93,7 @@ int main( int argc, char *argv[] )
     int N;  /* N = Number of neurons on layer 0 */
     int K;  /* K = Number of layers in the network */
     int N_neurons; /* Numbers of neurons from leyer 1 to layer K-1 */
-    float *I, *W, *B, *V;  /* Data */
+    float *input_buffer, *output_buffer, *W, *B, *V;  /* Data */
     int *layers_neuron_number;  /* Array with the numbers of neuron for each layer*/
     
     if (argc == 3) {
@@ -105,21 +126,21 @@ int main( int argc, char *argv[] )
     // I = (float*)malloc( N * sizeof(float) );  /* Input layer vector */
     W = (float*)malloc( N_neurons * R * sizeof(float) ); /* Weights vector */
     B = (float*)malloc( (K - 1) * sizeof(float) ); /* Bias vector */
-    V = (float*)malloc( (N + N_neurons) * sizeof(float) ); /* Neurons value vector  */
-
-    if (V == NULL || W == NULL || B == NULL) {
+    input_buffer = (float*)malloc( N * sizeof(float) ); 
+    output_buffer = (float*)malloc( (N - (R-1)) * sizeof(float) ); 
+    if (input_buffer == NULL || output_buffer == NULL || W == NULL || B == NULL) {
         printf("Memory allocation failed.\n");
         return -1;
     }
 
-    fill_zeros(V, N_neurons); // hidden layers has value 0 at the start
-    fill(V, N); // we allocate the first N neurons value for the input layer 
     tstart = hpc_gettime();
+    fill(input_buffer, N);
+    fill(output_buffer, (N - (R-1)));
     fill(W, N_neurons * 3);
+    fill(B, K - 1);
     tstop = hpc_gettime();
     printf("Data preparation execution time %f\n", tstop - tstart); 
 
-    fill(B, K - 1);
 
     // printf("\nINPUT_VECTOR (I), size %d\n ", N);
     // printf("\nWEIGHTS_VECTOR (W), size %d\n", N_neurons * 3);
@@ -136,9 +157,23 @@ int main( int argc, char *argv[] )
     for(int p=1; p<=100; p++){
         omp_set_num_threads(p);
         printf("P=%d\n", p);
+
+
         tstart = hpc_gettime();
-        forward_propagation(K, R, layers_neuron_number, V, W, B);
+        int weight_index = 0;  // Start from the start of weights vector
+        for (int k = 1; k < K; k++) {   // for each output vector
+            step_forward(input_buffer, output_buffer, k, N, W, B, weight_index);
+            // Switch buffer 
+            float* temp = input_buffer;
+            input_buffer = output_buffer;
+            output_buffer = temp;   // we use the old input buffer as the new ouptu buffer
+            // Update of the weight array index 
+            weight_index += (N - k * (R - 1)) * R;
+        }
         tstop = hpc_gettime();
+
+
+
         if(p==1){
             oneCoreReference = tstop - tstart;
             printf("Time: %f REFERENCE %f\n", tstop - tstart, speedup); 
