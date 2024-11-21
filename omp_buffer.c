@@ -7,6 +7,10 @@
  *
  ****************************************************************************/
 
+/* TO-DO: 
+    Controllare risultati con versione seriale
+    
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -45,7 +49,7 @@ void step_forward(float* input_buffer, float* output_buffer, int k, int N, float
     int input_buffer_index = 0;  
     int output_buffer_index = 0; 
     /* For every neuron in output layer*/
-    #pragma omp parallel for schedule(static)
+    // #pragma omp parallel for schedule(static)
     for (int i = 0; i < (N - k*(R - 1)); i++) { /* For every output neutron y_i in the output buffer)*/
         float sum = 0;
         int weight_idx = weight_index + i * R;  // Offset for the weight vector
@@ -58,6 +62,30 @@ void step_forward(float* input_buffer, float* output_buffer, int k, int N, float
     }
 }
 
+void forward_propagation(int K, int R, int* layers_neuron_number, float* V, float* W, float* B) {
+    int new_value_index = layers_neuron_number[0];  /* Start from the first neuron of layer 1 */
+    int old_value_index = 0;  /* Start from the first neuron of the input layer (layer 0) */
+    int weight_index = 0;     /* All weights are stored contiguously */
+
+    for (int k = 1; k < K; k++) { // Non <= K
+
+#pragma omp parallel for schedule(static)
+        for (int i = 0; i < layers_neuron_number[k]; i++) { /* For every output neutron y_i*/
+            float sum = 0.0;
+            for (int r = 0; r < R; r++) {   /* Iterate on R last layer neutrons for calculate the sum  */
+                int weight_idx = weight_index + (i * R) + r;    /* Local layer index of weights, for process*/ 
+                int input_index = old_value_index + i + r;
+                sum += V[input_index] * W[weight_index];
+            }
+            sum += B[k - 1];
+            V[new_value_index + i] = sigmoid(sum);
+        }
+        
+        weight_index += layers_neuron_number[k] * R;
+        old_value_index = new_value_index;
+        new_value_index += layers_neuron_number[k];
+    }
+}
 
 int main( int argc, char *argv[] )
 {
@@ -129,10 +157,42 @@ int main( int argc, char *argv[] )
     float best = 1;
     int bestP = 1;
     float bestDiff = 0;
+
+    /* -----------------------------------------------------------------Serial test*/
+    layers_neuron_number = (int*)malloc( K * sizeof(int) );  
+    N_neurons = 0;
+    for(int t = 0; t < K; t++){
+        N_neurons += (N - t*(R - 1));
+        layers_neuron_number[t] = (N - t*(R - 1));
+    }
+    // printf("Total neurons: %d \n", N_neurons);
+    float *V;
+    V = (float*)malloc( (N_neurons) * sizeof(float) ); /* Neurons value vector  */
+    fill(V, N); // we allocate the first N neurons value for the input layer 
+    for(int i=0; i < N; i++){
+        V[i] = input_buffer[i];
+    }
+
+    tstart = hpc_gettime();
+    forward_propagation(K, R, layers_neuron_number, V, W, B);
+    tstop = hpc_gettime();
+    printf("Time: %f SERIAL %f\n", tstop - tstart, speedup); 
+    printf("SERIAL output: ... ");
+
+    //last 10
+    // N_neurons - (N - K-1 * (R - 1))
+    
+    for(int i = N_neurons - 10; i < N_neurons; i++){
+        printf("%f ", V[i]);
+    }
+    printf("\n");
+    /* -----------------------------------------------------------------Serial test*/
+
+    
     for(int p=1; p<=14; p++){
         omp_set_num_threads(p);
         printf("P=%d\n", p);
-        
+
         tstart = hpc_gettime();
         int weight_index = 0;  // Start from the start of weights vector
         for (int k = 1; k < K; k++) {   // for each output vector
@@ -144,6 +204,11 @@ int main( int argc, char *argv[] )
             // Update of the weight array index 
             weight_index += (N - k * (R - 1)) * R;
         }
+        printf("Parallel output: ... ");
+        for(int i=(N - K-1 * (R - 1)) - 10; i < (N - K-1 * (R - 1)); i++){
+            printf("%f ", output_buffer[i]);
+        }
+        printf("\n");
         tstop = hpc_gettime();
 
         if(p==1){
