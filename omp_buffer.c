@@ -38,31 +38,6 @@ void fill_zeros( float* m, int n ){
     }
 }
 
-void forward_propagation(int K, int R, int* layers_neuron_number, float* V, float* W, float* B) {
-    int new_value_index = layers_neuron_number[0];  /* Start from the first neuron of layer 1 */
-    int old_value_index = 0;  /* Start from the first neuron of the input layer (layer 0) */
-    int weight_index = 0;     /* All weights are stored contiguously */
-
-    for (int k = 1; k < K; k++) { // Non <= K
-
-#pragma omp parallel for schedule(static)
-        for (int i = 0; i < layers_neuron_number[k]; i++) { /* For every output neutron y_i*/
-            float sum = 0.0;
-            for (int r = 0; r < R; r++) {   /* Iterate on R last layer neutrons for calculate the sum  */
-                int weight_idx = weight_index + (i * R) + r;    /* Local layer index of weights, for process*/ 
-                int input_index = old_value_index + i + r;
-                sum += V[input_index] * W[weight_index];
-            }
-            sum += B[k - 1];
-            V[new_value_index + i] = sigmoid(sum);
-        }
-        
-        weight_index += layers_neuron_number[k] * R;
-        old_value_index = new_value_index;
-        new_value_index += layers_neuron_number[k];
-    }
-}
-
 /* Computer the Y_k layer outputs */
 void step_forward(float* input_buffer, float* output_buffer, int k, int N, float* W, float* B, int weight_index) {
     int output_layer_size = N - k * (R - 1);  /* Number of neurons in current layer */
@@ -157,8 +132,7 @@ int main( int argc, char *argv[] )
     for(int p=1; p<=14; p++){
         omp_set_num_threads(p);
         printf("P=%d\n", p);
-
-
+        
         tstart = hpc_gettime();
         int weight_index = 0;  // Start from the start of weights vector
         for (int k = 1; k < K; k++) {   // for each output vector
@@ -171,8 +145,6 @@ int main( int argc, char *argv[] )
             weight_index += (N - k * (R - 1)) * R;
         }
         tstop = hpc_gettime();
-
-
 
         if(p==1){
             oneCoreReference = tstop - tstart;
