@@ -17,6 +17,9 @@
 #include <time.h>
 #include "hpc.h"
 
+float total_memory_allocated = 0; // Variabile globale per tracciare la memoria allocata
+
+
 /* Global constants */
 int R = 3; /* Kernel lenght, costant for all layers */
 
@@ -128,13 +131,18 @@ int main( int argc, char *argv[] )
          */
     // I = (float*)malloc( N * sizeof(float) );  /* Input layer vector */
     W = (float*)malloc( N_neurons * R * sizeof(float) ); /* Weights vector */
+    total_memory_allocated += N_neurons * R * sizeof(float); 
     B = (float*)malloc( (K - 1) * sizeof(float) ); /* Bias vector */
+    total_memory_allocated += (K - 1) * sizeof(float); 
     input_buffer = (float*)malloc( N * sizeof(float) ); 
-    output_buffer = (float*)malloc( (N - (R-1)) * sizeof(float) ); 
+    total_memory_allocated += N * sizeof(float); 
+    output_buffer = (float*)malloc( (N - (R-1)) * sizeof(float) );
+    total_memory_allocated += N * sizeof(float); 
     if (input_buffer == NULL || output_buffer == NULL || W == NULL || B == NULL) {
         printf("Memory allocation failed.\n");
         return -1;
     }
+    printf("Total memory allocated: %.2f MB\n", total_memory_allocated / (1024.0 * 1024.0));
 
     tstart = hpc_gettime();
     fill(input_buffer, N);
@@ -168,6 +176,8 @@ int main( int argc, char *argv[] )
     // printf("Total neurons: %d \n", N_neurons);
     float *V;
     V = (float*)malloc( (N_neurons) * sizeof(float) ); /* Neurons value vector  */
+    total_memory_allocated += (N_neurons) * sizeof(float) ; 
+
     fill(V, N); // we allocate the first N neurons value for the input layer 
     for(int i=0; i < N; i++){
         V[i] = input_buffer[i];
