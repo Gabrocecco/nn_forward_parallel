@@ -1,6 +1,6 @@
 /****************************************************************************
  * Compile with:
- * gcc -fopenmp omp.c -o omp -lm 
+ * gcc -fopenmp omp.c -o omp -lm -std=c99 -Wall -Wpedantic
  *
  * Run with:
  * ./omp N R K 
