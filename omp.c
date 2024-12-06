@@ -115,10 +115,10 @@ int main(int argc, char *argv[]) {
     int best_p = 1;
     float best_speedup;
     float current_time;
+    int max_number_of_threads = omp_get_max_threads();
     printf("MAX NUMBER OF THREADS: %d\n", omp_get_max_threads());
-    for(int p=1; p <= omp_get_max_threads(); p++){
+    for(int p=1; p <= max_number_of_threads; p++){
         omp_set_num_threads(p);
-	
         tstart = hpc_gettime();   
         int offset = 0; // Offset per accedere ai pesi del livello corrente
         for (int t = 0; t < K - 1; t++) {   // for K-1 layers 
@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
             best_p = p;
             best_speedup = (serial_time)/(tstop - tstart);
         }
-        printf("P=%d, time: %.4f, speedup: %.3f, \n", omp_get_num_threads(), tstop - tstart, (serial_time)/(tstop - tstart));
+        printf("P=%d, time: %.4f, speedup: %.3f, \n", p, tstop - tstart, (serial_time)/(tstop - tstart));
 
         // Printing first and last 10 values of output layer 
         // printf("Output Layer (first and last 10\n");
