@@ -38,9 +38,13 @@ void compute_layer( float *input,   // pointer to the array of the input layer
                     int offset  // offset for accessing weights array for the current layer 
                 ) 
 {
-    #pragma omp parallel for
+    float sum;
+    // #pragma omp parallel for schedule(, 128) \
+    //         private(sum) shared(input, weights, output, bias, offset)
+    #pragma omp parallel for schedule(static) \
+            private(sum) shared(input, weights, output, bias, offset)
     for (int i = 0; i < N; i++) {   // for every output neuron
-        float sum = 0.0;
+        sum = 0.0;
         for (int r = 0; r < R; r++) {   // R computations with R differente weights for each output neuron 
             sum += input[i + r] * weights[offset + i * R + r];
         }
@@ -65,10 +69,12 @@ int main(int argc, char *argv[]) {
     
     // Computation of total number of weights 
     int total_weights = 0;
+    int layer_size;
     for (int t = 0; t < K - 1; t++) {   // for K-1 layers (no weights for input layer)
-        int layer_size = N - t * (R - 1);   // number of weights in the current layer
+        layer_size = N - t * (R - 1);   // number of weights in the current layer
         total_weights += layer_size * R;    // we have R unique weights for each neuron 
     }
+    printf("Last layer size: %d\n", layer_size);
     printf("Nummber of weights: %d\n", total_weights);
     
     //--------------------------------------------------------DATA PREPARATION --------------------------------------------------------------
@@ -111,7 +117,7 @@ int main(int argc, char *argv[]) {
     int best_p = 1;
     float best_speedup;
     float current_time;
-    for(int p=1; p <= 20; p=p*2){
+    for(int p=1; p <= 15; p=p+2){
         omp_set_num_threads(p);
         tstart = hpc_gettime();   
         int offset = 0; // Offset per accedere ai pesi del livello corrente
