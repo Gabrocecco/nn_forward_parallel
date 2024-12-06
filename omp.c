@@ -39,8 +39,7 @@ void compute_layer( float *input,   // pointer to the array of the input layer
                 ) 
 {
     float sum;
-    // #pragma omp parallel for schedule(, 128) \
-    //         private(sum) shared(input, weights, output, bias, offset)
+    // #pragma omp parallel for schedule(, 128) private(sum) shared(input, weights, output, bias, offset)
     #pragma omp parallel for schedule(static) \
             private(sum) shared(input, weights, output, bias, offset)
     for (int i = 0; i < N; i++) {   // for every output neuron
@@ -88,7 +87,6 @@ int main(int argc, char *argv[]) {
     tot_number_of_bytes_allocated += (K * sizeof(float *)) + (total_weights * sizeof(float));
 
     /* Allocation of layers values and initialization of input layer */
-    long number_of_values = 0;
     for (int t = 0; t < K; t++) {
         int layer_size = N - t * (R - 1);
         layers[t] = (float *)malloc(layer_size * sizeof(float));    // data allocation of values for each of K layers
@@ -117,8 +115,10 @@ int main(int argc, char *argv[]) {
     int best_p = 1;
     float best_speedup;
     float current_time;
-    for(int p=1; p <= 15; p=p+2){
+    printf("MAX NUMBER OF THREADS: %d\n", omp_get_max_threads());
+    for(int p=1; p <= omp_get_max_threads(); p++){
         omp_set_num_threads(p);
+	
         tstart = hpc_gettime();   
         int offset = 0; // Offset per accedere ai pesi del livello corrente
         for (int t = 0; t < K - 1; t++) {   // for K-1 layers 
@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
             best_p = p;
             best_speedup = (serial_time)/(tstop - tstart);
         }
-        printf("P=%d, time: %.4f, speedup: %.3f, \n", p, tstop - tstart, (serial_time)/(tstop - tstart));
+        printf("P=%d, time: %.4f, speedup: %.3f, \n", omp_get_num_threads(), tstop - tstart, (serial_time)/(tstop - tstart));
 
         // Printing first and last 10 values of output layer 
         // printf("Output Layer (first and last 10\n");
