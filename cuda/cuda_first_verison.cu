@@ -3,6 +3,10 @@
 #include <math.h>
 #include <cuda_runtime.h>
 
+// nvcc cuda.cu -o cuda
+// ./cuda <n_input_neurons> <R> <n_layers>
+// ./cuda 1000000 3 100
+
 const float bias = 0.1; // Constant bias 
 
 // Sigmoid function, simple version 
@@ -10,10 +14,19 @@ __device__ float sigmoid(float x) {
     return 1.0 / (1.0 + expf(-x));
 }
 
-// Kernel per il calcolo della prossima layer output
-__global__ void compute_layer(float *input, float *output, float *weights, float bias, int N, int R, int offset) {
-    int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx < N) {
+// Kernel that calculates a layer output, spreding work across threads 
+__global__ void compute_layer(  float *input,   // input layer 
+                                float *output,  // output layer 
+                                float *weights, // array of all weights 
+                                float bias,     // constant bias for the layer 
+                                int output_size,// nummber of output's neurons 
+                                int R,          // constant R 
+                                int offset      // offset for weight index 
+                             ) 
+{
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;    // index of the output neuron 
+
+    if (idx < output_size) {    // never exeeds the number of output's neurons 
         float sum = 0.0;
         for (int r = 0; r < R; r++) {
             sum += input[idx + r] * weights[offset + idx * R + r];
@@ -26,7 +39,6 @@ int main(int argc, char *argv[]) {
     float tstart, tstop;
     long tot_number_of_bytes_allocated = 0;
 
-    // ./cuda <n_input_neurons> <R> <n_layers>
     if (argc != 4) {
         printf("Usage: %s <N> <R> <K>\n", argv[0]);
         return -1;
@@ -38,38 +50,38 @@ int main(int argc, char *argv[]) {
     int K = atoi(argv[3]);
     printf("N=%d, R=%d, K=%d\n", N, R, K);
 
-    // Calcola il numero totale di pesi
+    // Compute total number of weights 
     int total_weights = 0;
     int layer_size;
-    for (int t = 0; t < K - 1; t++) {   // per K-1 livelli (senza pesi per il livello di input)
-        layer_size = N - t * (R - 1);   // numero di pesi nel livello corrente
-        total_weights += layer_size * R;    // abbiamo R pesi unici per ogni neurone 
+    for (int t = 0; t < K - 1; t++) {   // we have weights for K-1 layers (we don't have weights for the input )
+        layer_size = N - t * (R - 1);   // numbers of neurons for the current layer 
+        total_weights += layer_size * R;    // we are R unique weights for each neuron
     }
-    printf("Last layer size: %d\n", layer_size);
-    printf("Numero totale di pesi: %d\n", total_weights);
+    printf("Output layer size: %d\n", layer_size);
+    printf("Total number of weigths: %d\n", total_weights);
 
-    //--------------------------------------------------------PREPARAZIONE DEI DATI--------------------------------------------------------------
-    printf("\n-----------------PREPARAZIONE DEI DATI-----------------\n");
+    //--------------------------------------------------------DATA PREPARATION--------------------------------------------------------------
+    printf("\n-----------------DATA PREPARATION-----------------\n");
     tstart = (float)clock() / CLOCKS_PER_SEC;
-    // Allocazione dei dati
-    float **layers = (float **)malloc(K * sizeof(float *)); // usiamo K array per i valori dei layer
-    float *weights = (float *)malloc(total_weights * sizeof(float));    // un array unico per i pesi
+    // Data allocation on CPU 
+    float **layers = (float **)malloc(K * sizeof(float *)); // we use K array's for value activations of the K layers
+    float *weights = (float *)malloc(total_weights * sizeof(float));    // we use a single long array for weights
 
     tot_number_of_bytes_allocated += (K * sizeof(float *)) + (total_weights * sizeof(float));
 
-    // Allocazione dei valori dei layer e inizializzazione del layer di input
+    // Allocation for each activation layer 
     for (int t = 0; t < K; t++) {
         int layer_size = N - t * (R - 1);
-        layers[t] = (float *)malloc(layer_size * sizeof(float));    // allocazione per i valori di ciascun livello
+        layers[t] = (float *)malloc(layer_size * sizeof(float));
         tot_number_of_bytes_allocated += (layer_size * sizeof(float));
-        if (t == 0) {  // inizializzazione solo per il primo layer (input)
+        if (t == 0) {  // we initialize at random value only the input layer 
             for (int i = 0; i < layer_size; i++) {
                 layers[0][i] = ((float)rand() / RAND_MAX);
             }
         }
     }
 
-    // Inizializzazione dei pesi
+    // Random weights initialization 
     for (int i = 0; i < total_weights; i++) {
         weights[i] = ((float)rand() / RAND_MAX);
     }
@@ -82,10 +94,6 @@ int main(int argc, char *argv[]) {
     float serial_time;
     float best_time;
     float current_time;
-
-    // Numero di thread per blocco
-    int threadsPerBlock = 256;
-    int numBlocks = (N + threadsPerBlock - 1) / threadsPerBlock;
 
     // Allocazione memoria sulla GPU
     float *d_input, *d_output, *d_weights;
@@ -105,15 +113,20 @@ int main(int argc, char *argv[]) {
 
     cudaEventRecord(start, 0);
 
+    int threadsPerBlock = 512;
+    int numBlocks;
     // Lancio del kernel
     int offset = 0;
     for (int t = 0; t < K - 1; t++) {
         int current_layer_size = N - t * (R - 1);
         int next_layer_size = N - (t + 1) * (R - 1);
-
+        
+        // Numero di thread per blocco
+        numBlocks = (next_layer_size + threadsPerBlock - 1) / threadsPerBlock;
+        
         // Chiamata al kernel CUDA
         compute_layer<<<numBlocks, threadsPerBlock>>>(d_input, d_output, d_weights, bias, next_layer_size, R, offset);
-
+    
         // Aggiorna l'offset
         offset += current_layer_size * R;
     }
