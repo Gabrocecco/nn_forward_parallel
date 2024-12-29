@@ -1,9 +1,9 @@
 /****************************************************************************
  * Compile with:
- * gcc -fopenmp omp.c -o omp -lm -std=c99 -Wall -Wpedantic
+ * gcc -fopenmp omp_offset.c -o omp_offset -lm -std=c99 -Wall -Wpedantic
  *
  * Run with:
- * ./omp N R K 
+ * ./offset N R K 
  *
  ****************************************************************************/
  #include <stdio.h>
