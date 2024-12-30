@@ -49,10 +49,9 @@ def read_and_plot_efficiency(file_path):
 
     # Mostrare il grafico
     plt.legend()
+    plt.savefig("weak_eff_plot.png")
     plt.show()
 
 # Esegui lo script per il file di esempio
 file_path = 'weak.txt'  # Cambia con il percorso del tuo file
 read_and_plot_efficiency(file_path)
-
-plt.savefig("weak_eff_plot.png")

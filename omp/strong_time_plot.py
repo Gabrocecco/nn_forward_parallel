@@ -33,9 +33,9 @@ if not threads or not compute_times:
 # Creazione del grafico
 plt.figure(figsize=(10, 6))
 plt.plot(threads, compute_times, marker='o', color='b', label='Compute time CPU')
-plt.xlabel("Number of threads")
-plt.ylabel("Compute time (seconds)")
-plt.title("Compute time vs Number of threads")
+plt.xlabel("Number of threads (P)")
+plt.ylabel("Compute time (seconds) T(P)")
+plt.title("(Strong scaling) Compute time vs Number of threads")
 plt.grid(True)
 plt.legend()
 plt.tight_layout()

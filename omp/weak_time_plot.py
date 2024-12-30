@@ -15,11 +15,11 @@ plt.plot(threads, compute_times, marker='o', linestyle='-', color='b', label='Co
 plt.xticks(threads)
 
 # Labeling the axes
-plt.xlabel('Number of Threads', fontsize=12)
-plt.ylabel('Compute Time (seconds)', fontsize=12)
+plt.xlabel('Number of Threads (P)', fontsize=12)
+plt.ylabel('Compute Time (seconds) T(P)', fontsize=12)
 
 # Adding a title
-plt.title('Weak Scaling of the Problem with OMP_NUM_THREADS', fontsize=14)
+plt.title('Weak Scaling of the Problem with P threads ', fontsize=14)
 
 # Log scale for the x-axis to better visualize the scaling
 plt.xscale('linear')
@@ -30,6 +30,6 @@ plt.grid(True)
 
 # Show the plot
 plt.legend()
-plt.show()
 
 plt.savefig("weak_time_plot.png")
+plt.show()

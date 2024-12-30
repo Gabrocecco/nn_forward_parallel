@@ -40,10 +40,10 @@ speedup = [single_thread_time / time for time in compute_times]
 
 # Creazione del grafico dello speedup
 plt.figure(figsize=(10, 6))
-plt.plot(threads, speedup, marker='o', color='g', label='Speedup')
-plt.xlabel("Number of threads")
-plt.ylabel("Speedup")
-plt.title("Speedup vs Number of threads")
+plt.plot(threads, speedup, marker='o', color='r', label='Speedup')
+plt.xlabel("Number of threads (P)")
+plt.ylabel("Speedup S(P) = T(1) / T(P)")
+plt.title("(Strong scaling) Speedup vs Number of threads")
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
