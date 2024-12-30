@@ -1,7 +1,6 @@
 TO-DO: 
 
-
-Make a OMP version with a signle long array of activation values. 
+Finish omp version, weak scaling script.
 
 Make a CUDA version with cudaMallocManaged memeory.
 

@@ -1,0 +1,79 @@
+./omp_offset_serial 10000000 3 10
+Esecuzione con OMP_NUM_THREADS=1 problema scalato di 1
+Number of weights: 26999730
+Compute time CPU: 0.1250000000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=2 problema scalato di 2
+Number of weights: 53999730
+Compute time CPU: 0.1250000000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=3 problema scalato di 3
+Number of weights: 80999730
+Compute time CPU: 0.1562500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=4 problema scalato di 4
+Number of weights: 107999730
+Compute time CPU: 0.1562500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=5 problema scalato di 5
+Number of weights: 134999730
+Compute time CPU: 0.1562500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=6 problema scalato di 6
+Number of weights: 161999730
+Compute time CPU: 0.1562500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=7 problema scalato di 7
+Number of weights: 188999730
+Compute time CPU: 0.2187500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=8 problema scalato di 8
+Number of weights: 215999730
+Compute time CPU: 0.2187500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=9 problema scalato di 9
+Number of weights: 242999730
+Compute time CPU: 0.2500000000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=10 problema scalato di 10
+Number of weights: 269999730
+Compute time CPU: 0.2500000000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=11 problema scalato di 11
+Number of weights: 296999730
+Compute time CPU: 0.2500000000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=12 problema scalato di 12
+Number of weights: 323999730
+Compute time CPU: 0.2812500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=13 problema scalato di 13
+Number of weights: 350999730
+Compute time CPU: 0.2812500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=14 problema scalato di 14
+Number of weights: 377999730
+Compute time CPU: 0.2812500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=15 problema scalato di 15
+Number of weights: 404999730
+Compute time CPU: 0.2812500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=16 problema scalato di 16
+Number of weights: 431999730
+Compute time CPU: 0.2812500000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=17 problema scalato di 17
+Number of weights: 458999730
+Compute time CPU: 0.3125000000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=18 problema scalato di 18
+Number of weights: 485999730
+Compute time CPU: 0.3125000000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=19 problema scalato di 19
+Number of weights: 512999730
+Compute time CPU: 0.3125000000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=20 problema scalato di 20
+---------------------------------------------

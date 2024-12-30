@@ -21,6 +21,22 @@ float sigmoid(float x) {
     return 1.0 / (1.0 + exp(-x));
 }
 
+void compute_layer(float *activationsCPU, float *weightsCPU, int next_layer_size, int R, int activations_offset, int weights_offset, int output_idx){
+    float sum;
+    // for every output
+    #pragma omp parallel for schedule(static) private(sum)
+    for(int i = 0; i < next_layer_size; i++){
+        sum = 0.0;
+        // for R weights and activation values 
+        for(int r = 0; r < R; r++){
+            sum += activationsCPU[activations_offset + i + r] * weightsCPU[weights_offset + (i * R) + r];
+            // printf("    x_i = %.4f * w = %.4f\n", activationsCPU[activations_offset + i + r], weightsCPU[weights_offset + (i * R) + r]);
+        }
+        activationsCPU[output_idx + i] = sigmoid(sum);
+        // printf("y_%d = %.4f \n",i, activationsCPU[output_idx + i]);
+    }
+}
+
 int main(int argc, char *argv[]) {
     float tstart, tstop;
 
@@ -56,7 +72,7 @@ int main(int argc, char *argv[]) {
     int last_layer_size = layer_size;
     // printf("Total neurons: %d\n", total_neurons);
     // printf("Last layer size: %d\n", layer_size);
-    // printf("Number of weights: %d\n", total_weights);
+    printf("Number of weights: %d\n", total_weights);
 
     // we want to allocate two large sequential arrays, one for neurons activation 
     // and one for weights 
@@ -95,14 +111,14 @@ int main(int argc, char *argv[]) {
     //     printf("%.4f ", weightsCPU[i]);
     // }
     tstop = hpc_gettime();
-    printf("\nData initialization time: %f\n", tstop - tstart);
+    // printf("\nData initialization time: %f\n", tstop - tstart);
 
     int activations_offset = 0;
     int weights_offset = 0;
     tstart = hpc_gettime();
     // serial time output 
     int max_number_of_threads = omp_get_max_threads();
-    printf("MAX NUMBER OF THREADS: %d\n", max_number_of_threads);
+    // printf("MAX NUMBER OF THREADS: %d\n", max_number_of_threads);
     for (int t = 1; t < K; t++) {   // from layer 1 to layer K-1
         int current_layer_size = N - (t-1) * (R - 1);
         int next_layer_size = N - t * (R - 1);
@@ -110,34 +126,14 @@ int main(int argc, char *argv[]) {
         // we uodate the index of the first ouput neuron in next layer
         int output_idx = activations_offset + current_layer_size;    
 
-        float sum;
-        // for every output
-#pragma omp parallel for schedule(static) private(sum)
-        for(int i = 0; i < next_layer_size; i++){
-            sum = 0.0;
-            // for R weights and activation values 
-            for(int r = 0; r < R; r++){
-                // sum += activationsCPU[activations_offset + i + r] * weightsCPU[weights_offset + r];
-                // sum += activationsCPU[activations_offset + i + r] * weightsCPU[weights_offset + i * R + r];
-                sum += activationsCPU[activations_offset + i + r] * weightsCPU[weights_offset + (i * R) + r];
-                // printf("    x_i = %.4f * w = %.4f\n", activationsCPU[activations_offset + i + r], weightsCPU[weights_offset + (i * R) + r]);
+        compute_layer(activationsCPU, weightsCPU, next_layer_size, R, activations_offset, weights_offset, output_idx);
 
-            }
-            activationsCPU[output_idx + i] = sigmoid(sum);
-            // activationsCPU[output_idx + i] = sum;
-            // activationsCPU[output_idx + i] = sum;
-            // printf("y_%d = %.4f \n",i, activationsCPU[output_idx + i]);
-            // update the weights offset, we never use a single weights more then once
-
-            // weights_offset += R;
-        }
         // update the activation offset at the first neuron of the next input layer
         activations_offset += current_layer_size;
-        // weights_offset += current_layer_size * R;
         weights_offset += next_layer_size * R;
     }
     tstop = hpc_gettime();
-    printf("Compute time CPU: %f\n", tstop - tstart);
+    printf("Compute time CPU: %.10f\n", tstop - tstart);
 
     // we can print the last layer 
     // printf("Last 5 activations:  \n");
@@ -160,10 +156,6 @@ int main(int argc, char *argv[]) {
 
     free(activationsCPU);
     free(weightsCPU);
-
-    
-
-    
 }
 
     
