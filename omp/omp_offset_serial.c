@@ -1,9 +1,9 @@
 /****************************************************************************
  * Compile with:
- * gcc -fopenmp omp_offset.c -o omp_offset -lm -std=c99 -Wall -Wpedantic
+ * gcc -fopenmp omp_offset_serial.c -o omp_offset_serial -lm -std=c99 -Wall -Wpedantic
  *
  * Run with:
- * ./offset N R K 
+ * OMP_NUM_THREADS=4 ./omp_offset_serial 10000 3 10 
  *
  ****************************************************************************/
  #include <stdio.h>
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     int N = atoi(argv[1]); 
     int R = atoi(argv[2]); 
     int K = atoi(argv[3]); 
-    printf("N=%d, R=%d, K=%d\n", N, R, K);
+    // printf("N=%d, R=%d, K=%d\n", N, R, K);
 
     /* We have K layers 
     
@@ -54,25 +54,25 @@ int main(int argc, char *argv[]) {
         total_weights += layer_size * R;    // we have R unique weights for each neuron 
     }
     int last_layer_size = layer_size;
-    printf("Total neurons: %d\n", total_neurons);
-    printf("Last layer size: %d\n", layer_size);
-    printf("Number of weights: %d\n", total_weights);
+    // printf("Total neurons: %d\n", total_neurons);
+    // printf("Last layer size: %d\n", layer_size);
+    // printf("Number of weights: %d\n", total_weights);
 
     // we want to allocate two large sequential arrays, one for neurons activation 
     // and one for weights 
     int size = sizeof(float);   //both weights and activation are float's
 
-    printf("CPU allocation...\n");
+    // printf("CPU allocation...\n");
     tstart = hpc_gettime();
     float *activationsCPU = (float *)malloc(total_neurons * size);
     float *weightsCPU = (float *)malloc(total_weights * size);
     tstop = hpc_gettime();
-    printf("Data allocation time: %f\n", tstop - tstart);
-    printf("Allocating %d bytes (%d MB) of activations.\n Allocating %d bytes (%d MB) of weights.\n Tot: %d bytes (%d MB)\n",(total_neurons * size), (total_neurons * size / 1000000), (total_weights * size), (total_weights * size / 1000000), ((total_weights + total_neurons) * size), ((total_weights + total_neurons) * size / 1000000));
+    // printf("Data allocation time: %f\n", tstop - tstart);
+    // printf("Allocating %d bytes (%d MB) of activations.\n Allocating %d bytes (%d MB) of weights.\n Tot: %d bytes (%d MB)\n",(total_neurons * size), (total_neurons * size / 1000000), (total_weights * size), (total_weights * size / 1000000), ((total_weights + total_neurons) * size), ((total_weights + total_neurons) * size / 1000000));
     // we need to initialize at random values the N actications of input layer
     // and all weights values 
 
-    printf("CPU values initialization...\n");
+    // printf("CPU values initialization...\n");
     tstart = hpc_gettime();
     // Input layer initialization 
     for (int i = 0; i < N; i++) {
@@ -97,11 +97,12 @@ int main(int argc, char *argv[]) {
     tstop = hpc_gettime();
     printf("\nData initialization time: %f\n", tstop - tstart);
 
-
     int activations_offset = 0;
     int weights_offset = 0;
     tstart = hpc_gettime();
     // serial time output 
+    int max_number_of_threads = omp_get_max_threads();
+    printf("MAX NUMBER OF THREADS: %d\n", max_number_of_threads);
     for (int t = 1; t < K; t++) {   // from layer 1 to layer K-1
         int current_layer_size = N - (t-1) * (R - 1);
         int next_layer_size = N - t * (R - 1);
@@ -111,23 +112,32 @@ int main(int argc, char *argv[]) {
 
         float sum;
         // for every output
+#pragma omp parallel for schedule(static) private(sum)
         for(int i = 0; i < next_layer_size; i++){
             sum = 0.0;
             // for R weights and activation values 
             for(int r = 0; r < R; r++){
-                sum += activationsCPU[activations_offset + i + r] * weightsCPU[weights_offset + r];
+                // sum += activationsCPU[activations_offset + i + r] * weightsCPU[weights_offset + r];
+                // sum += activationsCPU[activations_offset + i + r] * weightsCPU[weights_offset + i * R + r];
+                sum += activationsCPU[activations_offset + i + r] * weightsCPU[weights_offset + (i * R) + r];
+                // printf("    x_i = %.4f * w = %.4f\n", activationsCPU[activations_offset + i + r], weightsCPU[weights_offset + (i * R) + r]);
+
             }
             activationsCPU[output_idx + i] = sigmoid(sum);
             // activationsCPU[output_idx + i] = sum;
+            // activationsCPU[output_idx + i] = sum;
             // printf("y_%d = %.4f \n",i, activationsCPU[output_idx + i]);
             // update the weights offset, we never use a single weights more then once
-            weights_offset += R;
+
+            // weights_offset += R;
         }
         // update the activation offset at the first neuron of the next input layer
         activations_offset += current_layer_size;
+        // weights_offset += current_layer_size * R;
+        weights_offset += next_layer_size * R;
     }
     tstop = hpc_gettime();
-    printf("Computer time CPU: %f\n", tstop - tstart);
+    printf("Compute time CPU: %f\n", tstop - tstart);
 
     // we can print the last layer 
     // printf("Last 5 activations:  \n");
@@ -135,18 +145,18 @@ int main(int argc, char *argv[]) {
     //     printf("%.4f ", activationsCPU[i]);
     // }
 
-    printf("Last layer size: %d\n", last_layer_size);
+    // printf("Last layer size: %d\n", last_layer_size);
     // printf("Output layer:  \n");
     // for (int i = total_neurons- last_layer_size; i < total_neurons; i++) {
     //     printf("%.4f ", activationsCPU[i]);
     // }
     // printf("\n");
 
-    printf("Output layer (last 10):  \n");
-    for (int i = total_neurons-10; i < total_neurons; i++) {
-        printf("%.4f ", activationsCPU[i]);
-    }
-    printf("\n");
+    // printf("Output layer (last 10):  \n");
+    // for (int i = total_neurons-10; i < total_neurons; i++) {
+    //     printf("%.4f ", activationsCPU[i]);
+    // }
+    // printf("\n");
 
     free(activationsCPU);
     free(weightsCPU);

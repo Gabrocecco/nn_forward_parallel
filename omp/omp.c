@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
             compute_layer(layers[t], layers[t + 1], weights, bias, next_layer_size, R, offset);
 
             // Aggiorna l'offset per i pesi
-            offset += current_layer_size * R;
+            offset += next_layer_size * R;
         }
         tstop = hpc_gettime();   
         // printf("Inference time: %f\n", tstop - tstart);
@@ -146,14 +146,14 @@ int main(int argc, char *argv[]) {
         printf("P=%d, time: %.4f, speedup: %.3f, \n", p, tstop - tstart, (serial_time)/(tstop - tstart));
 
         // Printing first and last 10 values of output layer 
-        // printf("Output Layer (first and last 10\n");
-        // for (int i = 0; i < 10; i++) {
-        //     printf("%.4f ", layers[K - 1][i]);
-        // }
-        // printf("\n ...\n");
-        // for (int i = N - (K - 1) * (R - 1) - 10; i < N - (K - 1) * (R - 1); i++) {
-        //     printf("%.4f ", layers[K - 1][i]);
-        // }
+        printf("Output Layer (first and last 10\n");
+        for (int i = 0; i < 10; i++) {
+            printf("%.4f ", layers[K - 1][i]);
+        }
+        printf("\n ...\n");
+        for (int i = N - (K - 1) * (R - 1) - 10; i < N - (K - 1) * (R - 1); i++) {
+            printf("%.4f ", layers[K - 1][i]);
+        }
         printf("\n");
     }
     printf("P=%d best time %.4f: best speedup: %.3f\n", best_p, best_time, best_speedup);

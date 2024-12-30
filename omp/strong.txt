@@ -1,0 +1,120 @@
+Esecuzione con OMP_NUM_THREADS=1
+
+Data initialization time: 3.312500
+MAX NUMBER OF THREADS: 1
+Compute time CPU: 1.156250
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=2
+
+Data initialization time: 3.406250
+MAX NUMBER OF THREADS: 2
+Compute time CPU: 0.625000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=3
+
+Data initialization time: 3.406250
+MAX NUMBER OF THREADS: 3
+Compute time CPU: 0.468750
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=4
+
+Data initialization time: 3.531250
+MAX NUMBER OF THREADS: 4
+Compute time CPU: 0.343750
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=5
+
+Data initialization time: 3.562500
+MAX NUMBER OF THREADS: 5
+Compute time CPU: 0.281250
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=6
+
+Data initialization time: 3.593750
+MAX NUMBER OF THREADS: 6
+Compute time CPU: 0.250000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=7
+
+Data initialization time: 3.593750
+MAX NUMBER OF THREADS: 7
+Compute time CPU: 0.312500
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=8
+
+Data initialization time: 3.718750
+MAX NUMBER OF THREADS: 8
+Compute time CPU: 0.281250
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=9
+
+Data initialization time: 3.593750
+MAX NUMBER OF THREADS: 9
+Compute time CPU: 0.250000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=10
+
+Data initialization time: 3.625000
+MAX NUMBER OF THREADS: 10
+Compute time CPU: 0.250000
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=11
+
+Data initialization time: 3.625000
+MAX NUMBER OF THREADS: 11
+Compute time CPU: 0.218750
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=12
+
+Data initialization time: 3.593750
+MAX NUMBER OF THREADS: 12
+Compute time CPU: 0.218750
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=13
+
+Data initialization time: 3.625000
+MAX NUMBER OF THREADS: 13
+Compute time CPU: 0.187500
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=14
+
+Data initialization time: 3.593750
+MAX NUMBER OF THREADS: 14
+Compute time CPU: 0.187500
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=15
+
+Data initialization time: 3.625000
+MAX NUMBER OF THREADS: 15
+Compute time CPU: 0.156250
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=16
+
+Data initialization time: 3.593750
+MAX NUMBER OF THREADS: 16
+Compute time CPU: 0.187500
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=17
+
+Data initialization time: 3.656250
+MAX NUMBER OF THREADS: 17
+Compute time CPU: 0.156250
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=18
+
+Data initialization time: 3.625000
+MAX NUMBER OF THREADS: 18
+Compute time CPU: 0.156250
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=19
+
+Data initialization time: 3.625000
+MAX NUMBER OF THREADS: 19
+Compute time CPU: 0.156250
+---------------------------------------------
+Esecuzione con OMP_NUM_THREADS=20
+
+Data initialization time: 3.625000
+MAX NUMBER OF THREADS: 20
+Compute time CPU: 0.156250
+---------------------------------------------
