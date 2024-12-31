@@ -1,201 +1,81 @@
 ./omp_offset_serial 10000000 3 10
 Esecuzione con OMP_NUM_THREADS=1
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 1
-Compute time CPU: 1.218750
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 1.2500000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=2
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 2
-Compute time CPU: 0.687500
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.6875000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=3
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 3
-Compute time CPU: 0.468750
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.5000000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=4
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 4
-Compute time CPU: 0.375000
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.3750000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=5
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 5
-Compute time CPU: 0.343750
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.3125000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=6
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 6
-Compute time CPU: 0.281250
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.2500000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=7
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 7
-Compute time CPU: 0.312500
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.3125000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=8
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 8
-Compute time CPU: 0.312500
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.3125000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=9
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 9
-Compute time CPU: 0.281250
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.2812500000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=10
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 10
-Compute time CPU: 0.250000
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.2500000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=11
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 11
-Compute time CPU: 0.218750
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.2187500000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=12
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 12
-Compute time CPU: 0.218750
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.2187500000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=13
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 13
-Compute time CPU: 0.218750
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.2187500000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=14
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 14
-Compute time CPU: 0.187500
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.1875000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=15
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 15
-Compute time CPU: 0.187500
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.1875000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=16
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 16
-Compute time CPU: 0.187500
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.1875000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=17
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 17
-Compute time CPU: 0.156250
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.1562500000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=18
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 18
-Compute time CPU: 0.156250
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.1562500000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=19
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 19
-Compute time CPU: 0.156250
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.1875000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=20
-N=10000000, R=3, K=10
-Total neurons: 99999910
-Last layer size: 9999982
 Number of weights: 269999730
-MAX NUMBER OF THREADS: 20
-Compute time CPU: 0.156250
-Output layer (last 10):  
-0.8376 0.7454 0.6880 0.7264 0.7783 0.8265 0.6320 0.7135 0.7565 0.7214 
+Compute time CPU: 0.1875000000
 ---------------------------------------------

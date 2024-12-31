@@ -5,6 +5,7 @@ PROGRAM="./omp_offset_serial"
 
 # Parametri fissi
 PARAM1=10000000
+# PARAM1=1000000
 PARAM2=3
 PARAM3=10
 

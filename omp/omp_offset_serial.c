@@ -3,7 +3,7 @@
  * gcc -fopenmp omp_offset_serial.c -o omp_offset_serial -lm -std=c99 -Wall -Wpedantic
  *
  * Run with:
- * OMP_NUM_THREADS=4 ./omp_offset_serial 10000 3 10 
+ * OMP_NUM_THREADS=4 ./omp_offset_serial 10000000 3 10 
  *
  ****************************************************************************/
  #include <stdio.h>
@@ -13,15 +13,22 @@
  #include "hpc.h"
  #include <sys/resource.h>
 
- const float bias = 0.1; // Constant bias 
-
+const float bias = 0.1; // Constant bias for all layers
 
 // Sgimoid, simple version 
 float sigmoid(float x) {
     return 1.0 / (1.0 + exp(-x));
 }
 
-void compute_layer(float *activationsCPU, float *weightsCPU, int next_layer_size, int R, int activations_offset, int weights_offset, int output_idx){
+void compute_layer(float *activations,  // activations array 
+                   float *weights,  // weights array
+                   int next_layer_size, // output layer size
+                   int R,   // number of weights for each output neuron
+                   int activations_offset,  // offset of the first neuron of the input layer
+                   int weights_offset,  // offset for the weights
+                   int output_idx   // index of the first output neuron
+                )
+{
     float sum;
     // for every output
     #pragma omp parallel for schedule(static) private(sum)
@@ -29,11 +36,11 @@ void compute_layer(float *activationsCPU, float *weightsCPU, int next_layer_size
         sum = 0.0;
         // for R weights and activation values 
         for(int r = 0; r < R; r++){
-            sum += activationsCPU[activations_offset + i + r] * weightsCPU[weights_offset + (i * R) + r];
-            // printf("    x_i = %.4f * w = %.4f\n", activationsCPU[activations_offset + i + r], weightsCPU[weights_offset + (i * R) + r]);
+            sum += activations[activations_offset + i + r] * weights[weights_offset + (i * R) + r];
+            // printf("    x_i = %.4f * w = %.4f\n", activations[activations_offset + i + r], weights[weights_offset + (i * R) + r]);
         }
-        activationsCPU[output_idx + i] = sigmoid(sum);
-        // printf("y_%d = %.4f \n",i, activationsCPU[output_idx + i]);
+        activations[output_idx + i] = sigmoid(sum + bias);
+        // printf("y_%d = %.4f \n",i, activations[output_idx + i]);
     }
 }
 
@@ -80,8 +87,8 @@ int main(int argc, char *argv[]) {
 
     // printf("CPU allocation...\n");
     tstart = hpc_gettime();
-    float *activationsCPU = (float *)malloc(total_neurons * size);
-    float *weightsCPU = (float *)malloc(total_weights * size);
+    float *activations = (float *)malloc(total_neurons * size);
+    float *weights = (float *)malloc(total_weights * size);
     tstop = hpc_gettime();
     // printf("Data allocation time: %f\n", tstop - tstart);
     // printf("Allocating %d bytes (%d MB) of activations.\n Allocating %d bytes (%d MB) of weights.\n Tot: %d bytes (%d MB)\n",(total_neurons * size), (total_neurons * size / 1000000), (total_weights * size), (total_weights * size / 1000000), ((total_weights + total_neurons) * size), ((total_weights + total_neurons) * size / 1000000));
@@ -92,23 +99,23 @@ int main(int argc, char *argv[]) {
     tstart = hpc_gettime();
     // Input layer initialization 
     for (int i = 0; i < N; i++) {
-        activationsCPU[i] = ((float)rand() / RAND_MAX);
+        activations[i] = ((float)rand() / RAND_MAX);
     }
     // printf("Input values:  \n");
     // for (int i = 0; i < N; i++) {
-    // printf("%.4f ", activationsCPU[i]);
+    // printf("%.4f ", activations[i]);
     // }
-    // Weigths initialization 
+    // Weigths initialization
     for (int i = 0; i < total_weights; i++) {
-        weightsCPU[i] = ((float)rand() / RAND_MAX);
+        weights[i] = ((float)rand() / RAND_MAX);
     }
     // printf("\nAll weights:  \n");
     // for (int i = 0; i < total_weights; i++) {
-    //     printf("%.4f ", weightsCPU[i]);
+    //     printf("%.4f ", weights[i]);
     // }
     // printf("\nLast 5 weights:  \n");
     // for (int i = total_weights-5; i < total_weights; i++) {
-    //     printf("%.4f ", weightsCPU[i]);
+    //     printf("%.4f ", weights[i]);
     // }
     tstop = hpc_gettime();
     // printf("\nData initialization time: %f\n", tstop - tstart);
@@ -126,7 +133,7 @@ int main(int argc, char *argv[]) {
         // we uodate the index of the first ouput neuron in next layer
         int output_idx = activations_offset + current_layer_size;    
 
-        compute_layer(activationsCPU, weightsCPU, next_layer_size, R, activations_offset, weights_offset, output_idx);
+        compute_layer(activations, weights, next_layer_size, R, activations_offset, weights_offset, output_idx);
 
         // update the activation offset at the first neuron of the next input layer
         activations_offset += current_layer_size;
@@ -138,24 +145,24 @@ int main(int argc, char *argv[]) {
     // we can print the last layer 
     // printf("Last 5 activations:  \n");
     // for (int i = total_neurons - 5; i < total_neurons; i++) {
-    //     printf("%.4f ", activationsCPU[i]);
+    //     printf("%.4f ", activations[i]);
     // }
 
     // printf("Last layer size: %d\n", last_layer_size);
     // printf("Output layer:  \n");
     // for (int i = total_neurons- last_layer_size; i < total_neurons; i++) {
-    //     printf("%.4f ", activationsCPU[i]);
+    //     printf("%.4f ", activations[i]);
     // }
     // printf("\n");
 
     // printf("Output layer (last 10):  \n");
     // for (int i = total_neurons-10; i < total_neurons; i++) {
-    //     printf("%.4f ", activationsCPU[i]);
+    //     printf("%.4f ", activations[i]);
     // }
     // printf("\n");
 
-    free(activationsCPU);
-    free(weightsCPU);
+    free(activations);
+    free(weights);
 }
 
     
