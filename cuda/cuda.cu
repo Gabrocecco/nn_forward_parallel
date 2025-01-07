@@ -43,10 +43,10 @@ __global__ void compute_layerGPU(  float *activations,
         // printf("Thread idx = %d passed\n", idx);
         float sum = 0.0;
         for (int r = 0; r < R; r++) {
-            sum += activations[activations_offset + idx + r] * weights[weights_offset + (idx * R) + r];
+            sum += activations[activations_offset + i + r] * weights[weights_offset + (i * R) + r];
         }
         // printf("Thread idx = %d total sum: %.6f \n", idx, sum);
-        activations[output_offset + idx] = sigmoid(sum + bias);
+        activations[output_offset + i] = sigmoid(sum + bias);
     }
 }
 

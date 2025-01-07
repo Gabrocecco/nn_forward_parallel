@@ -3,7 +3,7 @@ Number of SMs: 68
 N=1000000, R=3, K=100
 Output layer size: 999802
 Total number of weigths: 296970300
-Preapration time: 4.0000000000
+Preapration time: 3.7500000000
 
 
 Compute time GPU: 0.0000000000
