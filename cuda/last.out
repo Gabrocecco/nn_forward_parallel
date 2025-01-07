@@ -1,0 +1,20 @@
+=== Start CUDA program ===
+Number of SMs: 68
+N=1000000, R=3, K=100
+Output layer size: 999802
+Total number of weigths: 296970300
+Preapration time: 4.0000000000
+
+
+Compute time GPU: 0.0000000000
+activationsCPU[99990090] = 0.772585
+ activationsCPU[99990091] = 0.871608
+ activationsCPU[99990092] = 0.806705
+ activationsCPU[99990093] = 0.632031
+ activationsCPU[99990094] = 0.664742
+ activationsCPU[99990095] = 0.831899
+ activationsCPU[99990096] = 0.864554
+ activationsCPU[99990097] = 0.775909
+ activationsCPU[99990098] = 0.830513
+ activationsCPU[99990099] = 0.862756
+ === End of Job ===

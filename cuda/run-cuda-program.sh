@@ -31,5 +31,6 @@
 echo "=== Start CUDA program ==="
 # nvcc "cuda-vecadd0.cu" -o "cuda-vecadd0" && srun "./cuda-vecadd0"
 nvcc cuda.cu -o cuda
-srun ./cuda 1000000 3 100
+# nvidia-smi
+./cuda 1000000 3 100
 echo "=== End of Job ==="

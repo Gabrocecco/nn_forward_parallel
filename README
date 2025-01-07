@@ -1,7 +1,4 @@
 TO-DO: 
 
-Finish omp version, weak scaling script.
-
-Make a CUDA version with cudaMallocManaged memeory.
-
-Make a CUDA version with a single long array of activation values. 
+Integrate the serial check for cuda.
+Scaling and timings in cuda. 

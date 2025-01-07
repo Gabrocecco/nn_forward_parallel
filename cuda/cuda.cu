@@ -3,6 +3,7 @@
 #include <math.h>
 #include <cuda_runtime.h>
 #include <curand_kernel.h>  // for generationg random values in GPU
+#include "hpc.h"
 
 // nvcc cuda.cu -o cuda
 // ./cuda <n_input_neurons> <R> <n_layers>
@@ -15,25 +16,37 @@ __device__ float sigmoid(float x) {
     return 1.0 / (1.0 + expf(-x));
 }
 
+#define __cudaCheckError(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
+{
+   if (code != cudaSuccess) 
+   {
+      fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+      if (abort) exit(code);
+   }
+}
+
 // Kernel that calculates a sone output values of next output layer 
 __global__ void compute_layerGPU(  float *activations,   
                                 float *weights,  
-                                float next_layer_size,  
-                                float R,      
+                                int next_layer_size,  
+                                int R,      
                                 int activations_offset,
-                                int weights_offset,          
-                                int output_idx      
+                                int weights_offset,
+                                int output_offset   // index of the first output neuron  
                              ) 
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;    // index of the output neuron 
     int stride = gridDim.x * blockDim.x;
     for (int i = idx; i < next_layer_size; i += stride)
     {
+        // printf("Thread idx = %d passed\n", idx);
         float sum = 0.0;
         for (int r = 0; r < R; r++) {
-            sum += input[activations_offset + idx + r] * weights[weights_offset + idx * R + r];
+            sum += activations[activations_offset + idx + r] * weights[weights_offset + (idx * R) + r];
         }
-        activations[idx] = sigmoid(sum + bias);
+        // printf("Thread idx = %d total sum: %.6f \n", idx, sum);
+        activations[output_offset + idx] = sigmoid(sum + bias);
     }
 }
 
@@ -74,8 +87,10 @@ int main(int argc, char *argv[]) {
     // Compute total number of weights 
     int total_weights = 0;
     int layer_size;
-    for (int t = 0; t < K - 1; t++) {   // we have weights for K-1 layers (we don't have weights for the input )
+    int total_neurons = N;   // input layer has N neurons 
+    for (int t = 1; t < K ; t++) {   // we have weights for K-1 layers (we don't have weights for the input )
         layer_size = N - t * (R - 1);   // numbers of neurons for the current layer 
+        total_neurons += layer_size; // update the number of total neurons
         total_weights += layer_size * R;    // we are R unique weights for each neuron
     }
     printf("Output layer size: %d\n", layer_size);
@@ -96,27 +111,44 @@ int main(int argc, char *argv[]) {
 
     // GPU allocation and initialization 
     float *activationsGPU, *weightsGPU;
-    cudaMalloc(&activationsGPU, total_neurons * size);
-    cudaMalloc(&weightsGPU, total_weights * size);
+    __cudaCheckError(cudaMalloc(&activationsGPU, total_neurons * size));
+    __cudaCheckError(cudaMalloc(&weightsGPU, total_weights * size));
     
     // Launch kernel to initialize weights with random values
     int seed = 99;
-    int threads_per_block = 1024;
+    int threadsPerBlock = 1024;
     int blocksPerGrid = (total_weights + threadsPerBlock - 1) / threadsPerBlock;
+
+    tstart = hpc_gettime();
     initializeRandomArray<<<blocksPerGrid, threadsPerBlock>>>(weightsGPU, total_weights, seed);
+    __cudaCheckError( cudaPeekAtLastError() );
+    __cudaCheckError( cudaDeviceSynchronize() );
+    initializeRandomArray<<<blocksPerGrid, threadsPerBlock>>>(activationsGPU, N, seed);
+    __cudaCheckError( cudaPeekAtLastError() );
+    __cudaCheckError( cudaDeviceSynchronize() );
 
     // Copy data back from GPU to CPU
-    cudaMemcpy(activationsCPU, activationsGPU, total_neurons * sizeof(float), cudaMemcpyDeviceToHost);
-    cudaMemcpy(weightsCPU, weightsGPU, total_weights * sizeof(float), cudaMemcpyDeviceToHost);
-
+    __cudaCheckError(cudaMemcpy(activationsCPU, activationsGPU, total_neurons * sizeof(float), cudaMemcpyDeviceToHost));
+    __cudaCheckError(cudaMemcpy(weightsCPU, weightsGPU, total_weights * sizeof(float), cudaMemcpyDeviceToHost));
+    tstop = hpc_gettime();
+    printf("Preapration time: %.10f\n", tstop - tstart);
     // Verify by printing fisrt and last 10 values of weights
-    for (int i = 0; i < 10; i++) {
-        printf("weightsCPU[%d] = %f ", i, weightsCPU[i]);
-    } 
-    printf("\n");
-    for (int i = total_weights - 10; i < total_weights; i++) {
-        printf("weightsCPU[%d] = %f ", i, weightsCPU[i]);
-    }
+    // for (int i = total_weights - 5; i < total_weights; i++) {
+    //     printf("weightsCPU[%d] = %f \n", i, weightsCPU[i]);
+    // } 
+    // printf("\n");
+    // for (int i = total_weights - 5; i < total_weights; i++) {
+    //     printf("weightsCPU[%d] = %f \n", i, weightsCPU[i]);
+    // }
+    // printf("\n\n");
+        // Verify by printing fisrt and last 10 values of weights
+    // for (int i = 0; i < total_neurons; i++) {
+    //     printf("activationsCPU[%d] = %f \n", i, activationsCPU[i]);
+    // } 
+    // printf("\n");
+
+    printf("\n\n");
+
 
     int activations_offset = 0;
     int weights_offset = 0;
@@ -129,10 +161,11 @@ int main(int argc, char *argv[]) {
 
         // Numero di thread per blocco
         int numBlocks = (output_layer_size + threadsPerBlock - 1) / threadsPerBlock;
-        
+        // printf("Lunching:\n %d blocks of %d threads each. \n Toatal: %d\n", numBlocks, threadsPerBlock, numBlocks * threadsPerBlock);
         // Chiamata al kernel CUDA
         compute_layerGPU<<<numBlocks, threadsPerBlock>>>(activationsGPU, weightsGPU, output_layer_size, R, activations_offset, weights_offset, output_idx);
-        cudaDeviceSynchronize(); // Wait for the GPU to finish
+        __cudaCheckError( cudaPeekAtLastError() );
+        __cudaCheckError( cudaDeviceSynchronize() );
     
         // update the activation offset at the first neuron of the next input layer
         activations_offset += input_layer_size;
@@ -142,11 +175,11 @@ int main(int argc, char *argv[]) {
     printf("Compute time GPU: %.10f\n", tstop - tstart);
 
     // Copy data back from GPU to CPU
-    cudaMemcpy(activationsCPU, activationsGPU, total_neurons * sizeof(float), cudaMemcpyDeviceToHost);
+    __cudaCheckError(cudaMemcpy(activationsCPU, activationsGPU, total_neurons * sizeof(float), cudaMemcpyDeviceToHost));
 
     // Verify by printing last 10 values of activations
     for (int i = total_neurons - 10; i < total_neurons; i++) {
-        printf("activationsCPU[%d] = %f ", i, activationsCPU[i]);
+        printf("activationsCPU[%d] = %f\n ", i, activationsCPU[i]);
     }
 
     // Deallocazione memoria

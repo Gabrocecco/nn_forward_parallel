@@ -86,26 +86,26 @@ inline void __cudaSafeCall( cudaError err, const char *file, const int line )
 #endif
 }
 
-inline void __cudaCheckError( const char *file, const int line )
-{
-#ifndef NO_CUDA_CHECK_ERROR
-    cudaError err = cudaGetLastError();
-    if ( cudaSuccess != err ) {
-        fprintf( stderr, "cudaCheckError() failed at %s:%i : %s\n",
-                 file, line, cudaGetErrorString( err ) );
-        abort();
-    }
+// inline void __cudaCheckError( const char *file, const int line )
+// {
+// #ifndef NO_CUDA_CHECK_ERROR
+//     cudaError err = cudaGetLastError();
+//     if ( cudaSuccess != err ) {
+//         fprintf( stderr, "cudaCheckError() failed at %s:%i : %s\n",
+//                  file, line, cudaGetErrorString( err ) );
+//         abort();
+//     }
 
-    /* More careful checking. However, this will affect performance.
-       Comment away if needed. */
-    err = cudaDeviceSynchronize();
-    if( cudaSuccess != err ) {
-        fprintf( stderr, "cudaCheckError() with sync failed at %s:%i : %s\n",
-                 file, line, cudaGetErrorString( err ) );
-        abort();
-    }
-#endif
-}
+//     /* More careful checking. However, this will affect performance.
+//        Comment away if needed. */
+//     err = cudaDeviceSynchronize();
+//     if( cudaSuccess != err ) {
+//         fprintf( stderr, "cudaCheckError() with sync failed at %s:%i : %s\n",
+//                  file, line, cudaGetErrorString( err ) );
+//         abort();
+//     }
+// #endif
+// }
 
 #endif
 
