@@ -1,8 +1,16 @@
 === Start CUDA program ===
-GPUassert: an illegal memory access was encountered cuda.cu 125
-Number of SMs: 142
-N=10000000, R=3, K=100
-Output layer size: 9999802
-Total number of weigths: 2969970300
-Weigths [GBs]: 15.87984
+N=1000000, R=3, K=100
+Data preparation started...
+Total number of weigths: 296970300
+Weigths [GBs]: 1.58784
+Data preparation time: 1061.765137 ms
+
+
+Computation starded...
+Compute time: 3.071040 ms
+final_layer_activations[999797] = 0.831899
+final_layer_activations[999798] = 0.864554
+final_layer_activations[999799] = 0.775909
+final_layer_activations[999800] = 0.830513
+final_layer_activations[999801] = 0.862756
 === End of Job ===
