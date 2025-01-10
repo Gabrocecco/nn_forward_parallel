@@ -29,11 +29,10 @@ void compute_layer(float *activations,  // activations array
                    int output_idx   // index of the first output neuron
                 )
 {
-    float sum;
     // for every output
     #pragma omp parallel for schedule(static) private(sum)
     for(int i = 0; i < next_layer_size; i++){
-        sum = 0.0;
+        float sum = 0.0;
         // for R weights and activation values 
         for(int r = 0; r < R; r++){
             sum += activations[activations_offset + i + r] * weights[weights_offset + (i * R) + r];
