@@ -1,11 +1,11 @@
 ./omp_offset_serial 10000000 3 10
 Esecuzione con OMP_NUM_THREADS=1
 Number of weights: 269999730
-Compute time CPU: 1.2500000000
+Compute time CPU: 2.0000000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=2
 Number of weights: 269999730
-Compute time CPU: 0.6875000000
+Compute time CPU: 1.0000000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=3
 Number of weights: 269999730
@@ -13,69 +13,22 @@ Compute time CPU: 0.5000000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=4
 Number of weights: 269999730
-Compute time CPU: 0.3750000000
+Compute time CPU: 1.0000000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=5
 Number of weights: 269999730
-Compute time CPU: 0.3125000000
+Compute time CPU: 1.0000000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=6
 Number of weights: 269999730
-Compute time CPU: 0.2500000000
+Compute time CPU: 1.0000000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=7
 Number of weights: 269999730
-Compute time CPU: 0.3125000000
+Compute time CPU: 1.0000000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=8
 Number of weights: 269999730
-Compute time CPU: 0.3125000000
+Compute time CPU: 1.0000000000
 ---------------------------------------------
 Esecuzione con OMP_NUM_THREADS=9
-Number of weights: 269999730
-Compute time CPU: 0.2812500000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=10
-Number of weights: 269999730
-Compute time CPU: 0.2500000000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=11
-Number of weights: 269999730
-Compute time CPU: 0.2187500000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=12
-Number of weights: 269999730
-Compute time CPU: 0.2187500000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=13
-Number of weights: 269999730
-Compute time CPU: 0.2187500000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=14
-Number of weights: 269999730
-Compute time CPU: 0.1875000000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=15
-Number of weights: 269999730
-Compute time CPU: 0.1875000000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=16
-Number of weights: 269999730
-Compute time CPU: 0.1875000000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=17
-Number of weights: 269999730
-Compute time CPU: 0.1562500000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=18
-Number of weights: 269999730
-Compute time CPU: 0.1562500000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=19
-Number of weights: 269999730
-Compute time CPU: 0.1875000000
----------------------------------------------
-Esecuzione con OMP_NUM_THREADS=20
-Number of weights: 269999730
-Compute time CPU: 0.1875000000
----------------------------------------------

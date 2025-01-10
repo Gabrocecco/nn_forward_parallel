@@ -22,17 +22,18 @@ float sigmoid(float x) {
 
 void compute_layer(float *activations,  // activations array 
                    float *weights,  // weights array
-                   int next_layer_size, // output layer size
+                   unsigned long int next_layer_size, // output layer size
                    int R,   // number of weights for each output neuron
-                   int activations_offset,  // offset of the first neuron of the input layer
-                   int weights_offset,  // offset for the weights
-                   int output_idx   // index of the first output neuron
+                   unsigned long int activations_offset,  // offset of the first neuron of the input layer
+                   unsigned long int weights_offset,  // offset for the weights
+                   unsigned long int output_idx   // index of the first output neuron
                 )
 {
+    float sum;
     // for every output
     #pragma omp parallel for schedule(static) private(sum)
-    for(int i = 0; i < next_layer_size; i++){
-        float sum = 0.0;
+    for(unsigned long int i = 0; i < next_layer_size; i++){
+        sum = 0.0;
         // for R weights and activation values 
         for(int r = 0; r < R; r++){
             sum += activations[activations_offset + i + r] * weights[weights_offset + (i * R) + r];
@@ -52,7 +53,7 @@ int main(int argc, char *argv[]) {
     }
 
     /* Reading input parameters */
-    int N = atoi(argv[1]); 
+    unsigned long int N = atoi(argv[1]); 
     int R = atoi(argv[2]); 
     int K = atoi(argv[3]); 
     // printf("N=%d, R=%d, K=%d\n", N, R, K);
@@ -67,18 +68,18 @@ int main(int argc, char *argv[]) {
     */
     
     // Computation of total number of weights 
-    int total_weights = 0;
-    int layer_size;
-    int total_neurons = N;   // input layer has N neurons 
+    unsigned long int total_weights = 0;
+    unsigned long int layer_size;
+    unsigned long int total_neurons = N;   // input layer has N neurons 
     for (int t = 1; t < K; t++) {   // from layer_1 to layer_K-1 (no weights for input layer)
         layer_size = N - t * (R - 1);   // number of neurons in the current layer
         total_neurons += layer_size; // update the number of total neurons
         total_weights += layer_size * R;    // we have R unique weights for each neuron 
     }
-    int last_layer_size = layer_size;
+    unsigned long int last_layer_size = layer_size;
     // printf("Total neurons: %d\n", total_neurons);
     // printf("Last layer size: %d\n", layer_size);
-    printf("Number of weights: %d\n", total_weights);
+    printf("Number of weights: %lu\n", total_weights);
 
     // we want to allocate two large sequential arrays, one for neurons activation 
     // and one for weights 
@@ -97,7 +98,7 @@ int main(int argc, char *argv[]) {
     // printf("CPU values initialization...\n");
     tstart = hpc_gettime();
     // Input layer initialization 
-    for (int i = 0; i < N; i++) {
+    for (unsigned long int i = 0; i < N; i++) {
         activations[i] = ((float)rand() / RAND_MAX);
     }
     // printf("Input values:  \n");
@@ -105,7 +106,7 @@ int main(int argc, char *argv[]) {
     // printf("%.4f ", activations[i]);
     // }
     // Weigths initialization
-    for (int i = 0; i < total_weights; i++) {
+    for (unsigned long int i = 0; i < total_weights; i++) {
         weights[i] = ((float)rand() / RAND_MAX);
     }
     // printf("\nAll weights:  \n");
@@ -119,18 +120,18 @@ int main(int argc, char *argv[]) {
     tstop = hpc_gettime();
     // printf("\nData initialization time: %f\n", tstop - tstart);
 
-    int activations_offset = 0;
-    int weights_offset = 0;
+    unsigned long int activations_offset = 0;
+    unsigned long int weights_offset = 0;
     tstart = hpc_gettime();
     // serial time output 
     int max_number_of_threads = omp_get_max_threads();
     // printf("MAX NUMBER OF THREADS: %d\n", max_number_of_threads);
     for (int t = 1; t < K; t++) {   // from layer 1 to layer K-1
-        int current_layer_size = N - (t-1) * (R - 1);
-        int next_layer_size = N - t * (R - 1);
+        unsigned long int current_layer_size = N - (t-1) * (R - 1);
+        unsigned long int next_layer_size = N - t * (R - 1);
         // printf("t=%d\ncurrent_layer_size=%d\nnext_layer_size=%d\n\n", t, current_layer_size, next_layer_size);
         // we uodate the index of the first ouput neuron in next layer
-        int output_idx = activations_offset + current_layer_size;    
+        unsigned long int output_idx = activations_offset + current_layer_size;    
 
         compute_layer(activations, weights, next_layer_size, R, activations_offset, weights_offset, output_idx);
 
@@ -139,7 +140,7 @@ int main(int argc, char *argv[]) {
         weights_offset += next_layer_size * R;
     }
     tstop = hpc_gettime();
-    printf("Compute time CPU: %.10f\n", tstop - tstart);
+    printf("Compute time CPU: %.5f\n", (float)tstop - tstart);
 
     // we can print the last layer 
     // printf("Last 5 activations:  \n");
