@@ -71,7 +71,6 @@ int main(int argc, char *argv[]) {
     printf("Number of SMs: %d\n", numberOfSMs);
 
     float tstart, tstop;
-    long tot_number_of_bytes_allocated = 0;
 
     if (argc != 4) {
         printf("Usage: %s <N> <R> <K>\n", argv[0]);
@@ -79,22 +78,22 @@ int main(int argc, char *argv[]) {
     }
 
     // Read input params 
-    int N = atoi(argv[1]);
+    unsigned long int N = atoi(argv[1]);
     int R = atoi(argv[2]);
     int K = atoi(argv[3]);
-    printf("N=%d, R=%d, K=%d\n", N, R, K);
+    printf("N=%lu, R=%d, K=%d\n", N, R, K);
 
     // Compute total number of weights 
-    int total_weights = 0;
-    int layer_size;
-    int total_neurons = N;   // input layer has N neurons 
-    for (int t = 1; t < K ; t++) {   // we have weights for K-1 layers (we don't have weights for the input )
+    unsigned long int total_weights = 0;
+    unsigned long int layer_size;
+    unsigned long int total_neurons = N;   // input layer has N neurons 
+    for (long t = 1; t < K ; t++) {   // we have weights for K-1 layers (we don't have weights for the input )
         layer_size = N - t * (R - 1);   // numbers of neurons for the current layer 
         total_neurons += layer_size; // update the number of total neurons
         total_weights += layer_size * R;    // we are R unique weights for each neuron
     }
-    printf("Output layer size: %d\n", layer_size);
-    printf("Total number of weigths: %d\n", total_weights);
+    printf("Output layer size: %lu\n", layer_size);
+    printf("Total number of weigths: %lu\n", total_weights);
 
     // Data allocation on CPU 
     // we want to allocate two large sequential arrays, one for neurons activation 
@@ -107,7 +106,8 @@ int main(int argc, char *argv[]) {
     float *weightsCPU = (float *)malloc(total_weights * size);
     tstop = hpc_gettime();
     
-    tot_number_of_bytes_allocated += (K * sizeof(float *)) + (total_weights * sizeof(float));
+    unsigned long int tot_number_of_bytes_allocated = (total_neurons + total_weights) * size;
+    printf("Weigths [GBs]: %.5f\n", (float)tot_number_of_bytes_allocated / 1000000000);
 
     // GPU allocation and initialization 
     float *activationsGPU, *weightsGPU;
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
     __cudaCheckError(cudaMemcpy(activationsCPU, activationsGPU, total_neurons * sizeof(float), cudaMemcpyDeviceToHost));
     __cudaCheckError(cudaMemcpy(weightsCPU, weightsGPU, total_weights * sizeof(float), cudaMemcpyDeviceToHost));
     tstop = hpc_gettime();
-    printf("Preapration time: %.10f\n", tstop - tstart);
+    printf("Preapration time: %.5f\n", tstop - tstart);
     // Verify by printing fisrt and last 10 values of weights
     // for (int i = total_weights - 5; i < total_weights; i++) {
     //     printf("weightsCPU[%d] = %f \n", i, weightsCPU[i]);
@@ -149,10 +149,17 @@ int main(int argc, char *argv[]) {
 
     printf("\n\n");
 
+    cudaEvent_t start, stop;
+    float elapsedTime;
+
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
 
     int activations_offset = 0;
     int weights_offset = 0;
-    tstart = hpc_gettime();
+
+    cudaEventRecord(start, 0);
+    // tstart = hpc_gettime();
     for (int t = 1; t < K; t++) {   // we iterate from layer 1 to layer K-1
         int input_layer_size = N - (t-1) * (R - 1);   // input layer size
         int output_layer_size = N - t * (R - 1);  // output layer size
@@ -171,8 +178,17 @@ int main(int argc, char *argv[]) {
         activations_offset += input_layer_size;
         weights_offset += output_layer_size * R;
     }
-    tstop = hpc_gettime();
-    printf("Compute time GPU: %.10f\n", tstop - tstart);
+    // tstop = hpc_gettime();
+    // printf("Compute time GPU: %.5f\n", tstop - tstart);
+
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+
+    cudaEventElapsedTime(&elapsedTime, start, stop);
+    printf("Tempo totale del ciclo for: %f ms\n", elapsedTime);
+
+    cudaEventDestroy(start);
+    cudaEventDestroy(stop);
 
     // Copy data back from GPU to CPU
     __cudaCheckError(cudaMemcpy(activationsCPU, activationsGPU, total_neurons * sizeof(float), cudaMemcpyDeviceToHost));
