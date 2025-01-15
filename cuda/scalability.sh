@@ -1,7 +1,17 @@
 #!/bin/bash
 
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gres=gpu:1
+#SBATCH --time=0-00:05:00
+#SBATCH --output last.out
+#SBATCH --partition=l40
+## TODO: change accordingly
+# export EXE="cuda"
+
+echo "=== Start CUDA program ==="
 # Compila il programma CUDA
-nvcc -o cuda_program cuda.cu
+nvcc -o cuda cuda.cu
 
 # Parametri di input
 R=10
@@ -19,7 +29,9 @@ echo "N,Time(ms)" > $output_file
 for factor in "${scaling_factors[@]}"; do
     N=$((10000 * factor))
     echo "Esecuzione con N = $N"
-    result=$(./cuda_program $N $R $K $blocksize | grep "Compute time" | awk '{print $3}')
+    result=$(./cuda $N $R $K $blocksize | grep "Compute time" | awk '{print $3}')
     echo "$N,$result" >> $output_file
     echo "N = $N, Time = $result ms"
 done
+
+echo "=== End of Job ==="

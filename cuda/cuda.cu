@@ -1,3 +1,12 @@
+/****************************************************************************
+ * Compile with:
+ * nvcc cuda.cu -o cuda
+ *
+ * Run with:
+ * ./cuda <n_input_neurons> <R> <n_layers>
+ * Use example:
+ * ./cuda 10000000 3 10
+ ****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -5,49 +14,28 @@
 #include <curand_kernel.h>  // for generationg random values in GPU
 #include "hpc.h"
 
-// nvcc cuda.cu -o cuda
-// ./cuda <n_input_neurons> <R> <n_layers>
-// ./cuda 1000000 3 100
-
-const float bias = 0.1; // Constant bias 
+const float BIAS = 0.1; // Constant bias 
 
 // Sigmoid function, simple version 
 __device__ float sigmoid(float x) {
     return 1.0 / (1.0 + expf(-x));
 }
 
-#define __cudaCheckError(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
-{
-   if (code != cudaSuccess) 
-   {
-      fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
-      if (abort) exit(code);
-   }
-}
-
-// Kernel that calculates a sone output values of next output layer 
-__global__ void compute_layerGPU(   float *activations,   
-                                    float *weights,  
-                                    unsigned long int next_layer_size,  
-                                    int R,      
-                                    unsigned long int activations_offset,
-                                    unsigned long int weights_offset,
-                                    unsigned long int output_offset   // index of the first output neuron  
+// Kernel that calculates a single output value one neuron of the next output layer 
+__global__ void compute_layerGPU(   float *activations,   // activations array pointer
+                                    float *weights,     // weights array pointer
+                                    int R,      // number of weights for each neuron 
+                                    unsigned long int activations_offset, // index of the first input neuron in the activations array context
+                                    unsigned long int weights_offset, // index of the first weightof the first neuron in the weights array context
+                                    unsigned long int output_offset   // index of the first output neuron in the activations array context
                                 ) 
 {
-    unsigned long int idx = blockIdx.x * blockDim.x + threadIdx.x;    // index of the output neuron 
-    unsigned long int stride = gridDim.x * blockDim.x;
-    for (unsigned long int i = idx; i < next_layer_size; i += stride)
-    {
-        // printf("Thread idx = %d passed\n", idx);
-        float sum = 0.0;
-        for (int r = 0; r < R; r++) {
-            sum += activations[activations_offset + i + r] * weights[weights_offset + (i * R) + r];
-        }
-        // printf("Thread idx = %d total sum: %.6f \n", idx, sum);
-        activations[output_offset + i] = sigmoid(sum + bias);
+    unsigned long int i = blockIdx.x * blockDim.x + threadIdx.x;    // index of the output neuron
+    float sum = 0.0;
+    for (int r = 0; r < R; r++) {
+        sum += activations[activations_offset + i + r] * weights[weights_offset + (i * R) + r];
     }
+    activations[output_offset + i] = sigmoid(sum + BIAS);
 }
 
 // initalizate an array with random float values (0, 1) range
@@ -62,15 +50,15 @@ __global__ void initializeRandomArray(float *array, unsigned long int size, unsi
 
 int main(int argc, char *argv[]) {
 
-    // int deviceId;
-    // int numberOfSMs;
+    int deviceId;
+    int numberOfSMs;
 
-    // cudaGetDevice(&deviceId);
-    // cudaDeviceGetAttribute(&numberOfSMs, cudaDevAttrMultiProcessorCount, deviceId);
+    cudaGetDevice(&deviceId);
+    cudaDeviceGetAttribute(&numberOfSMs, cudaDevAttrMultiProcessorCount, deviceId);
     cudaEvent_t start, stop;
     float elapsedTime;
 
-    // printf("Number of SMs: %d\n", numberOfSMs);
+    printf("Number of SMs: %d\n", numberOfSMs);
 
     if (argc != 4) {
         printf("Usage: %s <N> <R> <K>\n", argv[0]);
@@ -116,9 +104,10 @@ int main(int argc, char *argv[]) {
     
     // Launch kernel to initialize weights with random values
     int seed = 99;
-    int threadsPerBlock = 1024;
+    int threadsPerBlock = 512;  // 256/512 best
     int blocksPerGrid = (total_weights + threadsPerBlock - 1) / threadsPerBlock;
 
+    // random initialization of input layers and weights
     initializeRandomArray<<<blocksPerGrid, threadsPerBlock>>>(weightsGPU, total_weights, seed);
     __cudaCheckError( cudaPeekAtLastError() );
     __cudaCheckError( cudaDeviceSynchronize() );
@@ -154,8 +143,8 @@ int main(int argc, char *argv[]) {
         // Numero di thread per blocco
         unsigned long int numBlocks = (output_layer_size + threadsPerBlock - 1) / threadsPerBlock;
         // printf("Lunching:\n %d blocks of %d threads each. \n Toatal: %d\n", numBlocks, threadsPerBlock, numBlocks * threadsPerBlock);
-        // Chiamata al kernel CUDA
-        compute_layerGPU<<<numBlocks, threadsPerBlock>>>(activationsGPU, weightsGPU, output_layer_size, R, activations_offset, weights_offset, output_idx);
+        // Cuda kernel call
+        compute_layerGPU<<<numBlocks, threadsPerBlock>>>(activationsGPU, weightsGPU, R, activations_offset, weights_offset, output_idx);
         __cudaCheckError( cudaPeekAtLastError() );
         __cudaCheckError( cudaDeviceSynchronize() );
     

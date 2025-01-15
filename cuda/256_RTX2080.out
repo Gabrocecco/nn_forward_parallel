@@ -1,227 +1,200 @@
 === Start CUDA program ===
-Number of SMs: 142
+Number of SMs: 68
 N=31250, R=3, K=100
 Data preparation started...
 Total number of weigths: 9251550
 Weigths [GBs]: 0.04947
-Data preparation time: 34.402306 ms
+Data preparation time: 492.377380 ms
 
 
 Computation starded...
-Compute time: 0.736256 ms
+Compute time: 0.973600 ms
 final_layer_activations[31047] = 0.720070
 final_layer_activations[31048] = 0.748443
 final_layer_activations[31049] = 0.699496
 final_layer_activations[31050] = 0.866136
 final_layer_activations[31051] = 0.832108
-Number of SMs: 142
+Number of SMs: 68
 N=62500, R=3, K=100
 Data preparation started...
 Total number of weigths: 18532800
 Weigths [GBs]: 0.09909
-Data preparation time: 62.974976 ms
+Data preparation time: 234.207230 ms
 
 
 Computation starded...
-Compute time: 0.772864 ms
+Compute time: 1.159744 ms
 final_layer_activations[62297] = 0.764897
 final_layer_activations[62298] = 0.820976
 final_layer_activations[62299] = 0.794677
 final_layer_activations[62300] = 0.737975
 final_layer_activations[62301] = 0.686669
-Number of SMs: 142
+Number of SMs: 68
 N=125000, R=3, K=100
 Data preparation started...
 Total number of weigths: 37095300
 Weigths [GBs]: 0.19834
-Data preparation time: 124.529663 ms
+Data preparation time: 367.624268 ms
 
 
 Computation starded...
-Compute time: 1.137664 ms
+Compute time: 1.321216 ms
 final_layer_activations[124797] = 0.773548
 final_layer_activations[124798] = 0.767155
 final_layer_activations[124799] = 0.654253
 final_layer_activations[124800] = 0.694913
 final_layer_activations[124801] = 0.749166
-Number of SMs: 142
+Number of SMs: 68
 N=250000, R=3, K=100
 Data preparation started...
 Total number of weigths: 74220300
 Weigths [GBs]: 0.39684
-Data preparation time: 252.256226 ms
+Data preparation time: 761.507812 ms
 
 
 Computation starded...
-Compute time: 1.411072 ms
+Compute time: 1.801920 ms
 final_layer_activations[249797] = 0.720523
 final_layer_activations[249798] = 0.850776
 final_layer_activations[249799] = 0.725626
 final_layer_activations[249800] = 0.812392
 final_layer_activations[249801] = 0.776104
-Number of SMs: 142
+Number of SMs: 68
 N=500000, R=3, K=100
 Data preparation started...
 Total number of weigths: 148470300
 Weigths [GBs]: 0.79384
-Data preparation time: 513.590271 ms
+Data preparation time: 1568.891235 ms
 
 
 Computation starded...
-Compute time: 1.948800 ms
+Compute time: 2.809568 ms
 final_layer_activations[499797] = 0.842593
 final_layer_activations[499798] = 0.808930
 final_layer_activations[499799] = 0.647904
 final_layer_activations[499800] = 0.758556
 final_layer_activations[499801] = 0.817611
-Number of SMs: 142
+Number of SMs: 68
 N=1000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 296970300
 Weigths [GBs]: 1.58784
-Data preparation time: 1067.984863 ms
+Data preparation time: 3259.064941 ms
 
 
 Computation starded...
-Compute time: 3.092480 ms
+Compute time: 4.815072 ms
 final_layer_activations[999797] = 0.831899
 final_layer_activations[999798] = 0.864554
 final_layer_activations[999799] = 0.775909
 final_layer_activations[999800] = 0.830513
 final_layer_activations[999801] = 0.862756
-Number of SMs: 142
+Number of SMs: 68
 N=2000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 593970300
 Weigths [GBs]: 3.17584
-Data preparation time: 2200.836182 ms
+Data preparation time: 6752.256836 ms
 
 
 Computation starded...
-Compute time: 5.206016 ms
+Compute time: 8.818112 ms
 final_layer_activations[1999797] = 0.868178
 final_layer_activations[1999798] = 0.826495
 final_layer_activations[1999799] = 0.753218
 final_layer_activations[1999800] = 0.815129
 final_layer_activations[1999801] = 0.818436
-Number of SMs: 142
+Number of SMs: 68
 N=3000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 890970300
 Weigths [GBs]: 4.76384
-Data preparation time: 3382.775879 ms
+Data preparation time: 10497.529297 ms
 
 
 Computation starded...
-Compute time: 7.389184 ms
+Compute time: 12.591200 ms
 final_layer_activations[2999797] = 0.745206
 final_layer_activations[2999798] = 0.743241
 final_layer_activations[2999799] = 0.834622
 final_layer_activations[2999800] = 0.726947
 final_layer_activations[2999801] = 0.821323
-Number of SMs: 142
+Number of SMs: 68
 N=4000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 1187970300
 Weigths [GBs]: 6.35184
-Data preparation time: 4568.218262 ms
+Data preparation time: 14234.384766 ms
 
 
 Computation starded...
-Compute time: 9.397248 ms
+Compute time: 21.958401 ms
 final_layer_activations[3999797] = 0.854060
 final_layer_activations[3999798] = 0.892916
 final_layer_activations[3999799] = 0.725268
 final_layer_activations[3999800] = 0.819981
 final_layer_activations[3999801] = 0.637877
-Number of SMs: 142
+Number of SMs: 68
 N=5000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 1484970300
 Weigths [GBs]: 7.93984
-Data preparation time: 5680.360352 ms
+Data preparation time: 18046.085938 ms
 
 
 Computation starded...
-Compute time: 11.691008 ms
+Compute time: 27.199327 ms
 final_layer_activations[4999797] = 0.865095
 final_layer_activations[4999798] = 0.799263
 final_layer_activations[4999799] = 0.825600
 final_layer_activations[4999800] = 0.852170
 final_layer_activations[4999801] = 0.766013
-Number of SMs: 142
+Number of SMs: 68
 N=6000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 1781970300
 Weigths [GBs]: 9.52784
-Data preparation time: 6946.762695 ms
+Data preparation time: 22127.677734 ms
 
 
 Computation starded...
-Compute time: 17.013760 ms
+Compute time: 32.587391 ms
 final_layer_activations[5999797] = 0.798625
 final_layer_activations[5999798] = 0.790527
 final_layer_activations[5999799] = 0.783293
 final_layer_activations[5999800] = 0.732547
 final_layer_activations[5999801] = 0.697142
-Number of SMs: 142
+Number of SMs: 68
 N=7000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 2078970300
 Weigths [GBs]: 11.11584
-Data preparation time: 8177.480469 ms
+Data preparation time: 26392.228516 ms
 
 
 Computation starded...
-Compute time: 20.096001 ms
+Compute time: 38.108158 ms
 final_layer_activations[6999797] = 0.798093
 final_layer_activations[6999798] = 0.729998
 final_layer_activations[6999799] = 0.789076
 final_layer_activations[6999800] = 0.882697
 final_layer_activations[6999801] = 0.837642
-Number of SMs: 142
+GPUassert: out of memory cuda.cu 115
+Number of SMs: 68
 N=8000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 2375970300
 Weigths [GBs]: 12.70384
-Data preparation time: 9352.715820 ms
-
-
-Computation starded...
-Compute time: 23.165953 ms
-final_layer_activations[7999797] = 0.866837
-final_layer_activations[7999798] = 0.853493
-final_layer_activations[7999799] = 0.808643
-final_layer_activations[7999800] = 0.756311
-final_layer_activations[7999801] = 0.677366
-Number of SMs: 142
+GPUassert: out of memory cuda.cu 115
+Number of SMs: 68
 N=9000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 2672970300
 Weigths [GBs]: 14.29184
-Data preparation time: 10646.855469 ms
-
-
-Computation starded...
-Compute time: 25.674784 ms
-final_layer_activations[8999797] = 0.596608
-final_layer_activations[8999798] = 0.785595
-final_layer_activations[8999799] = 0.831133
-final_layer_activations[8999800] = 0.811276
-final_layer_activations[8999801] = 0.795426
-Number of SMs: 142
+GPUassert: out of memory cuda.cu 115
+Number of SMs: 68
 N=10000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 2969970300
 Weigths [GBs]: 15.87984
-Data preparation time: 11879.365234 ms
-
-
-Computation starded...
-Compute time: 28.314495 ms
-final_layer_activations[9999797] = 0.671902
-final_layer_activations[9999798] = 0.778594
-final_layer_activations[9999799] = 0.555184
-final_layer_activations[9999800] = 0.835106
-final_layer_activations[9999801] = 0.791982
 === End of Job ===

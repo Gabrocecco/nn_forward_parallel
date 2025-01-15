@@ -4,11 +4,11 @@ N=31250, R=3, K=100
 Data preparation started...
 Total number of weigths: 9251550
 Weigths [GBs]: 0.04947
-Data preparation time: 34.402306 ms
+Data preparation time: 40.487778 ms
 
 
 Computation starded...
-Compute time: 0.736256 ms
+Compute time: 0.861184 ms
 final_layer_activations[31047] = 0.720070
 final_layer_activations[31048] = 0.748443
 final_layer_activations[31049] = 0.699496
@@ -19,11 +19,11 @@ N=62500, R=3, K=100
 Data preparation started...
 Total number of weigths: 18532800
 Weigths [GBs]: 0.09909
-Data preparation time: 62.974976 ms
+Data preparation time: 63.942558 ms
 
 
 Computation starded...
-Compute time: 0.772864 ms
+Compute time: 0.886784 ms
 final_layer_activations[62297] = 0.764897
 final_layer_activations[62298] = 0.820976
 final_layer_activations[62299] = 0.794677
@@ -34,11 +34,11 @@ N=125000, R=3, K=100
 Data preparation started...
 Total number of weigths: 37095300
 Weigths [GBs]: 0.19834
-Data preparation time: 124.529663 ms
+Data preparation time: 125.382500 ms
 
 
 Computation starded...
-Compute time: 1.137664 ms
+Compute time: 1.139712 ms
 final_layer_activations[124797] = 0.773548
 final_layer_activations[124798] = 0.767155
 final_layer_activations[124799] = 0.654253
@@ -49,11 +49,11 @@ N=250000, R=3, K=100
 Data preparation started...
 Total number of weigths: 74220300
 Weigths [GBs]: 0.39684
-Data preparation time: 252.256226 ms
+Data preparation time: 256.758667 ms
 
 
 Computation starded...
-Compute time: 1.411072 ms
+Compute time: 1.388544 ms
 final_layer_activations[249797] = 0.720523
 final_layer_activations[249798] = 0.850776
 final_layer_activations[249799] = 0.725626
@@ -64,11 +64,11 @@ N=500000, R=3, K=100
 Data preparation started...
 Total number of weigths: 148470300
 Weigths [GBs]: 0.79384
-Data preparation time: 513.590271 ms
+Data preparation time: 524.242920 ms
 
 
 Computation starded...
-Compute time: 1.948800 ms
+Compute time: 1.995776 ms
 final_layer_activations[499797] = 0.842593
 final_layer_activations[499798] = 0.808930
 final_layer_activations[499799] = 0.647904
@@ -79,11 +79,11 @@ N=1000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 296970300
 Weigths [GBs]: 1.58784
-Data preparation time: 1067.984863 ms
+Data preparation time: 1090.694092 ms
 
 
 Computation starded...
-Compute time: 3.092480 ms
+Compute time: 3.115008 ms
 final_layer_activations[999797] = 0.831899
 final_layer_activations[999798] = 0.864554
 final_layer_activations[999799] = 0.775909
@@ -94,11 +94,11 @@ N=2000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 593970300
 Weigths [GBs]: 3.17584
-Data preparation time: 2200.836182 ms
+Data preparation time: 2241.274658 ms
 
 
 Computation starded...
-Compute time: 5.206016 ms
+Compute time: 5.237792 ms
 final_layer_activations[1999797] = 0.868178
 final_layer_activations[1999798] = 0.826495
 final_layer_activations[1999799] = 0.753218
@@ -109,11 +109,11 @@ N=3000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 890970300
 Weigths [GBs]: 4.76384
-Data preparation time: 3382.775879 ms
+Data preparation time: 3441.950684 ms
 
 
 Computation starded...
-Compute time: 7.389184 ms
+Compute time: 7.367680 ms
 final_layer_activations[2999797] = 0.745206
 final_layer_activations[2999798] = 0.743241
 final_layer_activations[2999799] = 0.834622
@@ -124,11 +124,11 @@ N=4000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 1187970300
 Weigths [GBs]: 6.35184
-Data preparation time: 4568.218262 ms
+Data preparation time: 4649.268066 ms
 
 
 Computation starded...
-Compute time: 9.397248 ms
+Compute time: 9.488384 ms
 final_layer_activations[3999797] = 0.854060
 final_layer_activations[3999798] = 0.892916
 final_layer_activations[3999799] = 0.725268
@@ -139,11 +139,11 @@ N=5000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 1484970300
 Weigths [GBs]: 7.93984
-Data preparation time: 5680.360352 ms
+Data preparation time: 5776.014160 ms
 
 
 Computation starded...
-Compute time: 11.691008 ms
+Compute time: 11.708416 ms
 final_layer_activations[4999797] = 0.865095
 final_layer_activations[4999798] = 0.799263
 final_layer_activations[4999799] = 0.825600
@@ -154,11 +154,11 @@ N=6000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 1781970300
 Weigths [GBs]: 9.52784
-Data preparation time: 6946.762695 ms
+Data preparation time: 7063.158691 ms
 
 
 Computation starded...
-Compute time: 17.013760 ms
+Compute time: 17.027073 ms
 final_layer_activations[5999797] = 0.798625
 final_layer_activations[5999798] = 0.790527
 final_layer_activations[5999799] = 0.783293
@@ -169,11 +169,11 @@ N=7000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 2078970300
 Weigths [GBs]: 11.11584
-Data preparation time: 8177.480469 ms
+Data preparation time: 8301.861328 ms
 
 
 Computation starded...
-Compute time: 20.096001 ms
+Compute time: 20.126753 ms
 final_layer_activations[6999797] = 0.798093
 final_layer_activations[6999798] = 0.729998
 final_layer_activations[6999799] = 0.789076
@@ -184,11 +184,11 @@ N=8000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 2375970300
 Weigths [GBs]: 12.70384
-Data preparation time: 9352.715820 ms
+Data preparation time: 9517.320312 ms
 
 
 Computation starded...
-Compute time: 23.165953 ms
+Compute time: 22.873024 ms
 final_layer_activations[7999797] = 0.866837
 final_layer_activations[7999798] = 0.853493
 final_layer_activations[7999799] = 0.808643
@@ -199,11 +199,11 @@ N=9000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 2672970300
 Weigths [GBs]: 14.29184
-Data preparation time: 10646.855469 ms
+Data preparation time: 10819.906250 ms
 
 
 Computation starded...
-Compute time: 25.674784 ms
+Compute time: 25.618431 ms
 final_layer_activations[8999797] = 0.596608
 final_layer_activations[8999798] = 0.785595
 final_layer_activations[8999799] = 0.831133
@@ -214,11 +214,11 @@ N=10000000, R=3, K=100
 Data preparation started...
 Total number of weigths: 2969970300
 Weigths [GBs]: 15.87984
-Data preparation time: 11879.365234 ms
+Data preparation time: 12070.108398 ms
 
 
 Computation starded...
-Compute time: 28.314495 ms
+Compute time: 28.350464 ms
 final_layer_activations[9999797] = 0.671902
 final_layer_activations[9999798] = 0.778594
 final_layer_activations[9999799] = 0.555184

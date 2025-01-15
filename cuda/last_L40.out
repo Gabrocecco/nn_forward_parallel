@@ -1,0 +1,17 @@
+=== Start CUDA program ===
+Number of SMs: 142
+N=140000000, R=3, K=10
+Data preparation started...
+Total number of weigths: 3779999730
+Weigths [GBs]: 20.72000
+Data preparation time: 15988.998047 ms
+
+
+Computation starded...
+Compute time: 35.379200 ms
+final_layer_activations[139999977] = 0.640792
+final_layer_activations[139999978] = 0.793203
+final_layer_activations[139999979] = 0.713750
+final_layer_activations[139999980] = 0.731744
+final_layer_activations[139999981] = 0.774454
+=== End of Job ===
