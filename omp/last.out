@@ -1,0 +1,13 @@
+=== Start  with 4 threads ===
+Number of weights: 2969970300
+CPU allocation...
+Allocating 3999960400 bytes (3999 MB) of activations.
+ Allocating 11879881200 bytes (11879 MB) of weights.
+ Tot: 15879841600 bytes (15879 MB)
+Values initialization...
+
+Data initialization time: 62.718750
+Compute time CPU: 10.39062
+Output layer (last 10):  
+ ... 0.7260 0.6918 0.8230 0.8010 0.8189 0.7333 0.7992 0.6921 0.7612 0.6544 
+=== End of Job ===

@@ -77,7 +77,6 @@ int main(int argc, char *argv[]) {
         total_neurons += layer_size; // update the number of total neurons
         total_weights += layer_size * R;    // we have R unique weights for each neuron 
     }
-    unsigned long int last_layer_size = layer_size;
     // printf("Total neurons: %d\n", total_neurons);
     // printf("Last layer size: %d\n", layer_size);
     printf("Number of weights: %lu\n", total_weights);
@@ -112,7 +111,6 @@ int main(int argc, char *argv[]) {
 
     unsigned long int activations_offset = 0;
     unsigned long int weights_offset = 0;
-    int max_number_of_threads = omp_get_max_threads();
     tstart = hpc_gettime();
     for (int t = 1; t < K; t++) {   // from layer 1 to layer K-1
         unsigned long int current_layer_size = N - (t-1) * (R - 1);

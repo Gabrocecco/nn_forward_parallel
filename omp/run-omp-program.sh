@@ -36,5 +36,6 @@
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 echo "=== Start $EXE with $OMP_NUM_THREADS threads ==="
-srun ./omp 1000000 3 100
+srun gcc -fopenmp omp.c -o omp -lm -std=c99 -Wall -Wpedantic
+srun ./omp 10000000 3 100
 echo "=== End of Job ==="
